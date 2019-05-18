@@ -6,11 +6,13 @@ const char MIDI_HEADER[4] = "MThd";
 const char MIDI_TRACK[4] = "MTrk";
 
 enum status {
+    STATUS_NOTEOFF= 0x08 << 4,
     STATUS_NOTEON = 0x09 << 4,
 };
 
 enum pitch {
     PITCH_C = 0x3C,
+    PITCH_Db = 0x3D,
 };
 
 
@@ -56,14 +58,18 @@ size_t fill_header(char *out, twobytes format, twobytes tracks, twobytes divisio
 
 
 size_t fill_midi_event(char *out, char delta, char status, char channel, char pitch, char velocity) {
-    const fourbytes size = utofourbytes(4);
+    size_t i = 8;
+    if(delta)
+        out[i++] = delta;
+    out[i++] = 0;
+    out[i++] = status | channel;
+    out[i++] = pitch;
+    out[i++] = velocity;
+
     memcpy(&out[0], MIDI_TRACK, 4);
-    memcpy(&out[4], &size, 4);
-    out[8] = delta;
-    out[9] = status | channel;
-    out[10] = pitch;
-    out[11] = velocity;
-    return 12;
+    *(fourbytes *)&out[4] = utofourbytes(i - 8); /* set chunk size */
+
+    return i;
 }
 
 
@@ -71,7 +77,7 @@ int main(int argc, char **argv) {
     size_t bytesused = 0;
     char buff[1024] = {0};
 
-    bytesused += fill_header(&buff[bytesused], utotwobytes(0), utotwobytes(0), utotwobytes(0));
+    bytesused += fill_header(&buff[bytesused], utotwobytes(0), utotwobytes(1), utotwobytes(0));
     bytesused += fill_midi_event(&buff[bytesused], 0, STATUS_NOTEON, 0x00, PITCH_C, 0x7F);
 
     FILE *f = fopen("out.mid", "wb");
