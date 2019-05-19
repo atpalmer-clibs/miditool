@@ -19,6 +19,11 @@ enum pitch {
     PITCH_F = 0x41,
     PITCH_Gb = 0x42,
     PITCH_G = 0x43,
+    PITCH_Ab = 0x44,
+    PITCH_A = 0x45,
+    PITCH_Bb = 0x46,
+    PITCH_B = 0x47,
+    PITCH_C4 = 0x48,
 };
 
 
@@ -88,17 +93,33 @@ size_t track_init(char *out) {
 }
 
 
+size_t track_end(char *track) {
+    fourbytes curr_bytes = flip4(*(uint32_t *)&track[4]);
+    char *p = &track[8 + curr_bytes.value];
+
+    p[0] = 0xFF;
+    p[1] = 0x2F;
+    p[2] = 0x00;
+
+    *(fourbytes *)&track[4] = flip4(curr_bytes.value + 3); /* update track size */
+
+    return 3;
+}
+
+
 int main(int argc, char **argv) {
     uint32_t bytesused = 0;
     char buff[1024] = {0};
 
-    bytesused += fill_header(&buff[bytesused], 0, 1, 0);
+    bytesused += fill_header(&buff[bytesused], 0, 1, 10000);
 
     char *track = &buff[bytesused];
     bytesused += track_init(track);
     bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_C, 0x7F);
     bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_E, 0x7F);
     bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_G, 0x7F);
+    bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_B, 0x7F);
+    bytesused += track_end(track);
 
     FILE *f = fopen("out.mid", "wb");
     fwrite(&buff, bytesused, 1, f);
