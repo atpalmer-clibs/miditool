@@ -58,7 +58,7 @@ fourbytes flip4(uint32_t in) {
 }
 
 
-size_t fill_header(char *out, uint16_t format, uint16_t tracks, uint16_t division) {
+uint32_t fill_header(char *out, uint16_t format, uint16_t tracks, uint16_t division) {
     memcpy(&out[0], MIDI_HEADER, 4) ;
     *(fourbytes *)&out[4] = flip4(6);
     *(twobytes *)&out[8] = flip2(format);
@@ -82,7 +82,7 @@ uint32_t track_update(char *track, uint32_t new_bytes) {
 }
 
 
-size_t track_midi_event(char *track, char delta, char status, char channel, char pitch, char velocity) {
+uint32_t track_midi_event(char *track, char delta, char status, char channel, char pitch, char velocity) {
     char *p = track_pointer(track);
 
     uint32_t new_bytes = 0;
@@ -97,14 +97,14 @@ size_t track_midi_event(char *track, char delta, char status, char channel, char
 }
 
 
-size_t track_init(char *out) {
+uint32_t track_init(char *out) {
     memcpy(&out[0], MIDI_TRACK, 4);
     *(fourbytes *)&out[4] = flip4(0);
     return 8;
 }
 
 
-size_t track_end(char *track) {
+uint32_t track_end(char *track) {
     char *p = track_pointer(track);
 
     p[0] = 0xFF;
