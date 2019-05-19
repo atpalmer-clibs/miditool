@@ -25,6 +25,18 @@ uint32_t track_init(char *out) {
 }
 
 
+uint32_t track_tempo(char *track, uint32_t quart_micros) {
+    char *p = track_pointer(track);
+
+    p[0] = 0xFF;
+    p[1] = 0x51;
+    p[2] = 0x03;
+    *(threebytes *)&p[3] = flip3lower(quart_micros);
+
+    return track_update(track, 6);
+}
+
+
 uint32_t track_midi_event(char *track, char delta, char status, char channel, char pitch, char velocity) {
     char *p = track_pointer(track);
 

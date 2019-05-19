@@ -20,3 +20,13 @@ fourbytes flip4(uint32_t in) {
     result.bytes[3] = bytes[0];
     return result;
 }
+
+
+threebytes flip3lower(uint32_t in) {
+    char *bytes = (char *)&in;
+    threebytes result;
+    result.bytes[0] = bytes[3];
+    result.bytes[1] = bytes[2];
+    result.bytes[2] = bytes[1];
+    return result;
+}

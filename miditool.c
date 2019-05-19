@@ -44,6 +44,7 @@ int main(int argc, char **argv) {
 
     char *track = &buff[bytesused];
     bytesused += track_init(track);
+    bytesused += track_tempo(track, 1000000000);
     bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_C, 0x7F);
     bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_E, 0x7F);
     bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_G, 0x7F);
