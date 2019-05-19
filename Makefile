@@ -1,5 +1,5 @@
 P=miditool
-OBJECTS=miditool.o typehelp.o
+OBJECTS=miditool.o track.o typehelp.o
 
 $(P): $(OBJECTS)
 
