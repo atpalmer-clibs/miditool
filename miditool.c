@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "typehelp.h"
 
 const char MIDI_HEADER[4] = "MThd";
 const char MIDI_TRACK[4] = "MTrk";
@@ -25,37 +26,6 @@ enum pitch {
     PITCH_B = 0x47,
     PITCH_C4 = 0x48,
 };
-
-
-typedef struct twobytes {
-    char bytes[2];
-} twobytes;
-
-
-typedef union fourbytes {
-    char bytes[4];
-    uint32_t value;
-} fourbytes;
-
-
-twobytes flip2(uint16_t in) {
-    char *bytes = (char *)&in;
-    twobytes result;
-    result.bytes[0] = bytes[1]; 
-    result.bytes[1] = bytes[0]; 
-    return result;
-}
-
-
-fourbytes flip4(uint32_t in) {
-    char *bytes = (char *)&in;
-    fourbytes result;
-    result.bytes[0] = bytes[3]; 
-    result.bytes[1] = bytes[2]; 
-    result.bytes[2] = bytes[1]; 
-    result.bytes[3] = bytes[0]; 
-    return result;
-}
 
 
 uint32_t fill_header(char *out, uint16_t format, uint16_t tracks, uint16_t division) {
