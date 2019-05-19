@@ -13,6 +13,12 @@ enum status {
 enum pitch {
     PITCH_C = 0x3C,
     PITCH_Db = 0x3D,
+    PITCH_D = 0x3E,
+    PITCH_Eb = 0x3F,
+    PITCH_E = 0x40,
+    PITCH_F = 0x41,
+    PITCH_Gb = 0x42,
+    PITCH_G = 0x43,
 };
 
 
@@ -21,12 +27,13 @@ typedef struct twobytes {
 } twobytes;
 
 
-typedef struct fourbytes {
+typedef union fourbytes {
     char bytes[4];
+    uint32_t value;
 } fourbytes;
 
 
-twobytes utotwobytes(uint16_t in) {
+twobytes flip2(uint16_t in) {
     char *bytes = (char *)&in;
     twobytes result;
     result.bytes[0] = bytes[1]; 
@@ -35,7 +42,7 @@ twobytes utotwobytes(uint16_t in) {
 }
 
 
-fourbytes utofourbytes(uint32_t in) {
+fourbytes flip4(uint32_t in) {
     char *bytes = (char *)&in;
     fourbytes result;
     result.bytes[0] = bytes[3]; 
@@ -46,39 +53,52 @@ fourbytes utofourbytes(uint32_t in) {
 }
 
 
-size_t fill_header(char *out, twobytes format, twobytes tracks, twobytes division) {
-    const fourbytes size = utofourbytes(6);
-    memcpy(&out[0], MIDI_HEADER, 4);
-    memcpy(&out[4], &size, 4);
-    memcpy(&out[8], &format, 2);
-    memcpy(&out[10], &tracks, 2);
-    memcpy(&out[12], &division, 2);
-    return 8 + 6;
+size_t fill_header(char *out, uint16_t format, uint16_t tracks, uint16_t division) {
+    memcpy(&out[0], MIDI_HEADER, 4) ;
+    *(fourbytes *)&out[4] = flip4(6);
+    *(twobytes *)&out[8] = flip2(format);
+    *(twobytes *)&out[10] = flip2(tracks);
+    *(twobytes *)&out[12] = flip2(division);
+    return 14;
 }
 
 
-size_t fill_midi_event(char *out, char delta, char status, char channel, char pitch, char velocity) {
-    size_t i = 8;
+size_t track_midi_event(char *track, char delta, char status, char channel, char pitch, char velocity) {
+    fourbytes curr_bytes = flip4(*(uint32_t *)&track[4]);
+    char *p = &track[8 + curr_bytes.value];
+
+    uint32_t new_bytes = 0;
     if(delta)
-        out[i++] = delta;
-    out[i++] = 0;
-    out[i++] = status | channel;
-    out[i++] = pitch;
-    out[i++] = velocity;
+        p[new_bytes++] = delta;
+    p[new_bytes++] = 0;
+    p[new_bytes++] = status | channel;
+    p[new_bytes++] = pitch;
+    p[new_bytes++] = velocity;
 
+    *(fourbytes *)&track[4] = flip4(curr_bytes.value + new_bytes); /* update track size */
+
+    return new_bytes;
+}
+
+
+size_t track_init(char *out) {
     memcpy(&out[0], MIDI_TRACK, 4);
-    *(fourbytes *)&out[4] = utofourbytes(i - 8); /* set chunk size */
-
-    return i;
+    *(fourbytes *)&out[4] = flip4(0);
+    return 8;
 }
 
 
 int main(int argc, char **argv) {
-    size_t bytesused = 0;
+    uint32_t bytesused = 0;
     char buff[1024] = {0};
 
-    bytesused += fill_header(&buff[bytesused], utotwobytes(0), utotwobytes(1), utotwobytes(0));
-    bytesused += fill_midi_event(&buff[bytesused], 0, STATUS_NOTEON, 0x00, PITCH_C, 0x7F);
+    bytesused += fill_header(&buff[bytesused], 0, 1, 0);
+
+    char *track = &buff[bytesused];
+    bytesused += track_init(track);
+    bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_C, 0x7F);
+    bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_E, 0x7F);
+    bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_G, 0x7F);
 
     FILE *f = fopen("out.mid", "wb");
     fwrite(&buff, bytesused, 1, f);
