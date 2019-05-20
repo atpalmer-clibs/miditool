@@ -4,17 +4,12 @@
 #include "typehelp.h"
 
 
-static char *track_pointer(char *track) {
+static uint32_t track_copy_bytes(char *track, char *bytes, uint32_t num_bytes) {
     fourbytes curr_bytes = flip4(*(uint32_t *)&track[4]);
     char *p = &track[8 + curr_bytes.value];
-    return p;
-}
-
-
-static uint32_t track_update(char *track, uint32_t new_bytes) {
-    fourbytes curr_bytes = flip4(*(uint32_t *)&track[4]);
-    *(fourbytes *)&track[4] = flip4(curr_bytes.value + new_bytes);
-    return new_bytes;
+    memcpy(p, bytes, num_bytes);
+    *(fourbytes *)&track[4] = flip4(curr_bytes.value + num_bytes);
+    return num_bytes;
 }
 
 
@@ -26,38 +21,28 @@ uint32_t track_init(char *out) {
 
 
 uint32_t track_tempo(char *track, uint32_t quart_micros) {
-    char *p = track_pointer(track);
-
-    p[0] = 0xFF;
-    p[1] = 0x51;
-    p[2] = 0x03;
-    *(threebytes *)&p[3] = flip3lower(quart_micros);
-
-    return track_update(track, 6);
+    char bytes[6] = { 0xFF, 0x51, 0x03 };
+    *(threebytes *)&bytes[3] = flip3lower(quart_micros);
+    return track_copy_bytes(track, bytes, 6);
 }
 
 
 uint32_t track_midi_event(char *track, char delta, char status, char channel, char pitch, char velocity) {
-    char *p = track_pointer(track);
+    char new_bytes[1024];
+    char *p = new_bytes;
 
-    uint32_t new_bytes = 0;
     if(delta)
-        p[new_bytes++] = delta;
-    p[new_bytes++] = 0;
-    p[new_bytes++] = status | channel;
-    p[new_bytes++] = pitch;
-    p[new_bytes++] = velocity;
+        *p++ = delta;
+    *p++ = 0x00; /* 0-byte ends delta-time */
+    *p++ = status | channel;
+    *p++ = pitch;
+    *p++ = velocity;
 
-    return track_update(track, new_bytes);
+    return track_copy_bytes(track, new_bytes, p - new_bytes);
 }
 
 
 uint32_t track_end(char *track) {
-    char *p = track_pointer(track);
-
-    p[0] = 0xFF;
-    p[1] = 0x2F;
-    p[2] = 0x00;
-
-    return track_update(track, 3);
+    char bytes[3] = { 0xFF, 0x2F, 0x00 };
+    return track_copy_bytes(track, bytes, 3);
 }
