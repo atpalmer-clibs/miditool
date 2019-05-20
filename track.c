@@ -27,6 +27,13 @@ uint32_t track_tempo(char *track, uint32_t quart_micros) {
 }
 
 
+uint32_t track_key(char *track, twobytes key) {
+    char bytes[5] = { 0xFF, 0x59, 0x02 };
+    memcpy(&bytes[3], &key, 2);
+    return track_copy_bytes(track, bytes, 5);
+}
+
+
 uint32_t track_midi_event(char *track, char delta, char status, char channel, char pitch, char velocity) {
     char new_bytes[1024];
     char *p = new_bytes;

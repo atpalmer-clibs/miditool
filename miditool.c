@@ -26,6 +26,11 @@ enum pitch {
 };
 
 
+const twobytes KEY_G_MAJOR = { 0x01, 0x00 };
+const twobytes KEY_C_MAJOR = { 0x00, 0x00 };
+const twobytes KEY_F_MAJOR = { 0x81, 0x00 };
+
+
 uint32_t fill_header(char *out, uint16_t format, uint16_t tracks, uint16_t division) {
     memcpy(&out[0], "MThd", 4) ;
     *(fourbytes *)&out[4] = flip4(6);
@@ -44,6 +49,7 @@ int main(int argc, char **argv) {
 
     char *track = &buff[bytesused];
     bytesused += track_init(track);
+    bytesused += track_key(track, KEY_C_MAJOR);
     bytesused += track_tempo(track, 1000000000);
     bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_C, 0x7F);
     bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_E, 0x7F);
