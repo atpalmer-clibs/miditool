@@ -4,11 +4,6 @@
 #include "track.h"
 #include "typehelp.h"
 
-enum status {
-    STATUS_NOTEOFF= 0x08 << 4,
-    STATUS_NOTEON = 0x09 << 4,
-};
-
 enum pitch {
     PITCH_C = 0x3C,
     PITCH_Db = 0x3D,
@@ -61,10 +56,10 @@ int main(int argc, char **argv) {
     bytesused += track_key(track, KEY_C_MAJOR);
     bytesused += track_time_signature(track, 2, TIMESIG_DENOM_4);
     bytesused += track_program_no(track, 0, 0, 5);
-    bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_C, 0x7F);
-    bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_E, 0x7F);
-    bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_G, 0x7F);
-    bytesused += track_midi_event(track, 0, STATUS_NOTEON, 0x00, PITCH_B, 0x7F);
+    bytesused += track_note_on(track, 0, 0, PITCH_C, 0x7F);
+    bytesused += track_note_on(track, 0, 0, PITCH_E, 0x7F);
+    bytesused += track_note_on(track, 0, 0, PITCH_G, 0x7F);
+    bytesused += track_note_on(track, 0, 0, PITCH_B, 0x7F);
     bytesused += track_end(track);
 
     FILE *f = fopen("out.mid", "wb");
