@@ -61,12 +61,9 @@ uint32_t track_key(char *track, twobytes key) {
 
 
 uint32_t track_program_no(char *track, char delta, char channel, char program_no) {
-    char new_bytes[1024];
-    char *p = new_bytes;
+    char new_bytes[6];
 
-    if(delta)
-        *p++ = delta;
-    *p++ = 0x00; /* 0-byte ends delta-time */
+    char *p = add_delta(new_bytes, delta); /* at most 4 bytes */
     *p++ = 0xC0 | channel; /* 0xC0 is program number status (status is or-ed with channel) */
     *p++ = program_no;
 
@@ -77,7 +74,7 @@ uint32_t track_program_no(char *track, char delta, char channel, char program_no
 uint32_t track_note_on(char *track, uint32_t delta, char channel, char pitch, char velocity) {
     char new_bytes[7];
 
-    char *p = add_delta(new_bytes, delta);
+    char *p = add_delta(new_bytes, delta); /* at most 4 bytes */
     *p++ = 0x90 | channel; /* 0x90 = note-on status (status is or-ed with channel) */
     *p++ = pitch;
     *p++ = velocity;
