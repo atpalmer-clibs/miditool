@@ -5,6 +5,7 @@
 #include "typehelp.h"
 
 uint32_t track_init(char *out);
+uint32_t track_time_signature(char *track, char num, char denomexp);
 uint32_t track_tempo(char *track, uint32_t quarter_micros);
 uint32_t track_key(char *track, twobytes key);
 uint32_t track_midi_event(char *track, char delta, char status, char channel, char pitch, char velocity);

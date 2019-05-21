@@ -27,6 +27,12 @@ uint32_t track_tempo(char *track, uint32_t quart_micros) {
 }
 
 
+uint32_t track_time_signature(char *track, char num, char denomexp) {
+    char bytes[7] = { 0xFF, 0x58, 0x04, num, denomexp, 24, 8 };
+    return track_copy_bytes(track, bytes, 7);
+}
+
+
 uint32_t track_key(char *track, twobytes key) {
     char bytes[5] = { 0xFF, 0x59, 0x02 };
     memcpy(&bytes[3], &key, 2);
