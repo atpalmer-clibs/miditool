@@ -21,22 +21,22 @@ uint32_t track_init(char *out) {
 
 
 uint32_t track_tempo(char *track, uint32_t quart_micros) {
-    char bytes[6] = { 0xFF, 0x51, 0x03 };
-    *(threebytes *)&bytes[3] = flip3lower(quart_micros);
-    return track_copy_bytes(track, bytes, 6);
-}
-
-
-uint32_t track_time_signature(char *track, char num, char denomexp) {
-    char bytes[7] = { 0xFF, 0x58, 0x04, num, denomexp, 24, 8 };
+    char bytes[7] = { 0x00, 0xFF, 0x51, 0x03 };
+    *(threebytes *)&bytes[4] = flip3lower(quart_micros);
     return track_copy_bytes(track, bytes, 7);
 }
 
 
+uint32_t track_time_signature(char *track, char num, char denomexp) {
+    char bytes[8] = { 0x00, 0xFF, 0x58, 0x04, num, denomexp, 24, 8 };
+    return track_copy_bytes(track, bytes, 8);
+}
+
+
 uint32_t track_key(char *track, twobytes key) {
-    char bytes[5] = { 0xFF, 0x59, 0x02 };
-    memcpy(&bytes[3], &key, 2);
-    return track_copy_bytes(track, bytes, 5);
+    char bytes[6] = { 0x00, 0xFF, 0x59, 0x02 };
+    memcpy(&bytes[4], &key, 2);
+    return track_copy_bytes(track, bytes, 6);
 }
 
 
@@ -70,6 +70,6 @@ uint32_t track_note_on(char *track, char delta, char channel, char pitch, char v
 
 
 uint32_t track_end(char *track) {
-    char bytes[3] = { 0xFF, 0x2F, 0x00 };
-    return track_copy_bytes(track, bytes, 3);
+    char bytes[4] = { 0x00, 0xFF, 0x2F, 0x00 };
+    return track_copy_bytes(track, bytes, 4);
 }
