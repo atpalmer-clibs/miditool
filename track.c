@@ -40,6 +40,20 @@ uint32_t track_key(char *track, twobytes key) {
 }
 
 
+uint32_t track_program_no(char *track, char delta, char channel, char program_no) {
+    char new_bytes[1024];
+    char *p = new_bytes;
+
+    if(delta)
+        *p++ = delta;
+    *p++ = 0x00; /* 0-byte ends delta-time */
+    *p++ = 0xC0 | channel;
+    *p++ = program_no;
+
+    return track_copy_bytes(track, new_bytes, p - new_bytes);
+}
+
+
 uint32_t track_midi_event(char *track, char delta, char status, char channel, char pitch, char velocity) {
     char new_bytes[1024];
     char *p = new_bytes;
