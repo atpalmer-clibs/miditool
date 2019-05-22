@@ -52,9 +52,17 @@ uint32_t track_tempo(char *track, uint32_t delta, uint32_t quart_micros) {
 }
 
 
-uint32_t track_time_signature(char *track, char num, char denomexp) {
-    char bytes[8] = { 0x00, 0xFF, 0x58, 0x04, num, denomexp, 24, 8 };
-    return track_copy_bytes(track, bytes, 8);
+uint32_t track_time_signature(char *track, uint32_t delta, char num, char denomexp) {
+    char bytes[11];
+    char *p = add_delta(bytes, delta);
+    *p++ = 0xFF;
+    *p++ = 0x58;
+    *p++ = 0x04;
+    *p++ = num;
+    *p++ = denomexp;
+    *p++ = 24;
+    *p++ = 8;
+    return track_copy_bytes(track, bytes, p - bytes);
 }
 
 
