@@ -83,7 +83,13 @@ uint32_t track_note_on(char *track, uint32_t delta, char channel, char pitch, ch
 }
 
 
-uint32_t track_end(char *track) {
-    char bytes[4] = { 0x00, 0xFF, 0x2F, 0x00 };
-    return track_copy_bytes(track, bytes, 4);
+uint32_t track_end(char *track, uint32_t delta) {
+    char bytes[7];
+
+    char *p = add_delta(bytes, delta); /* at most 4 bytes */
+    *p++ = 0xFF; /* "meta" chunk */
+    *p++ = 0x2F; /* track end */
+    *p++ = 0x00; /* no more bytes */
+
+    return track_copy_bytes(track, bytes, p - bytes);
 }

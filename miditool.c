@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
     bytesused += track_note_on(track, 0xFF, 0, PITCH_E, 0x7F);
     bytesused += track_note_on(track, 0xFF, 0, PITCH_G, 0x7F);
     bytesused += track_note_on(track, 0xFF, 0, PITCH_B, 0x7F);
-    bytesused += track_end(track);
+    bytesused += track_end(track, 0);
 
     FILE *f = fopen("out.mid", "wb");
     fwrite(&buff, bytesused, 1, f);
