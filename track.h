@@ -6,7 +6,7 @@
 
 uint32_t track_init(char *out);
 uint32_t track_time_signature(char *track, char num, char denomexp);
-uint32_t track_tempo(char *track, uint32_t quarter_micros);
+uint32_t track_tempo(char *track, uint32_t delta, uint32_t quarter_micros);
 uint32_t track_key(char *track, twobytes key);
 uint32_t track_program_no(char *track, uint32_t delta, char channel, char program_no);
 uint32_t track_note_on(char *track, uint32_t delta, char channel, char pitch, char velocity);

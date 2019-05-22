@@ -40,10 +40,15 @@ uint32_t track_init(char *out) {
 }
 
 
-uint32_t track_tempo(char *track, uint32_t quart_micros) {
-    char bytes[7] = { 0x00, 0xFF, 0x51, 0x03 };
-    *(threebytes *)&bytes[4] = flip3lower(quart_micros);
-    return track_copy_bytes(track, bytes, 7);
+uint32_t track_tempo(char *track, uint32_t delta, uint32_t quart_micros) {
+    char bytes[10];
+    char *p = add_delta(bytes, delta);
+    *p++ = 0xFF;
+    *p++ = 0x51;
+    *p++ = 0x03;
+    *(threebytes *)p = flip3lower(quart_micros);
+    p += 3;
+    return track_copy_bytes(track, bytes, p - bytes);
 }
 
 
