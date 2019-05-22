@@ -5,19 +5,20 @@
 #include "typehelp.h"
 
 enum pitch {
-    PITCH_C = 0x3C,
-    PITCH_Db = 0x3D,
-    PITCH_D = 0x3E,
-    PITCH_Eb = 0x3F,
-    PITCH_E = 0x40,
-    PITCH_F = 0x41,
-    PITCH_Gb = 0x42,
-    PITCH_G = 0x43,
-    PITCH_Ab = 0x44,
-    PITCH_A = 0x45,
-    PITCH_Bb = 0x46,
-    PITCH_B = 0x47,
-    PITCH_C4 = 0x48,
+    PITCH_G3 = 0x37,
+    PITCH_C4 = 0x3C,
+    PITCH_Db4 = 0x3D,
+    PITCH_D4 = 0x3E,
+    PITCH_Eb4 = 0x3F,
+    PITCH_E4 = 0x40,
+    PITCH_F4 = 0x41,
+    PITCH_Gb4 = 0x42,
+    PITCH_G4 = 0x43,
+    PITCH_Ab4 = 0x44,
+    PITCH_A4 = 0x45,
+    PITCH_Bb4 = 0x46,
+    PITCH_B4 = 0x47,
+    PITCH_C5 = 0x48,
 };
 
 
@@ -55,11 +56,12 @@ int main(int argc, char **argv) {
     bytesused += track_tempo(track, 0, 1000000000);
     bytesused += track_key(track, 0, KEY_C_MAJOR);
     bytesused += track_time_signature(track, 0, 2, TIMESIG_DENOM_4);
-    bytesused += track_program_no(track, 0, 0, 5);
-    bytesused += track_note_on(track, 0, 0, PITCH_C, 0x7F);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_E, 0x7F);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_G, 0x7F);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_B, 0x7F);
+    bytesused += track_program_no(track, 0, 0, 46);
+    bytesused += track_note_on(track, 0, 0, PITCH_G3, 0x7F);
+    bytesused += track_note_on(track, 0xFF, 0, PITCH_C4, 0x7F);
+    bytesused += track_note_on(track, 0xFF, 0, PITCH_E4, 0x7F);
+    bytesused += track_note_on(track, 0xFF, 0, PITCH_G4, 0x7F);
+    bytesused += track_note_on(track, 0xFF, 0, PITCH_B4, 0x7F);
     bytesused += track_end(track, 0);
 
     FILE *f = fopen("out.mid", "wb");
