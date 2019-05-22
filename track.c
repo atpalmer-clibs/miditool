@@ -4,6 +4,14 @@
 #include "typehelp.h"
 
 
+enum meta_event {
+    META_TRACK_END = 0x2F,
+    META_TEMPO = 0x51,
+    META_TIME_SIGNATURE = 0x58,
+    META_KEY_SIGNATURE = 0x59,
+};
+
+
 static uint32_t track_copy_bytes(char *track, char *bytes, uint32_t num_bytes) {
     fourbytes curr_bytes = flip4(*(uint32_t *)&track[4]);
     char *p = &track[8 + curr_bytes.value];
@@ -44,7 +52,7 @@ uint32_t track_tempo(char *track, uint32_t delta, uint32_t quart_micros) {
     char bytes[10];
     char *p = add_delta(bytes, delta);
     *p++ = 0xFF;
-    *p++ = 0x51;
+    *p++ = META_TEMPO;
     *p++ = 0x03;
     *(threebytes *)p = flip3lower(quart_micros);
     p += 3;
@@ -56,7 +64,7 @@ uint32_t track_time_signature(char *track, uint32_t delta, char num, char denome
     char bytes[11];
     char *p = add_delta(bytes, delta);
     *p++ = 0xFF;
-    *p++ = 0x58;
+    *p++ = META_TIME_SIGNATURE;
     *p++ = 0x04;
     *p++ = num;
     *p++ = denomexp;
@@ -67,7 +75,7 @@ uint32_t track_time_signature(char *track, uint32_t delta, char num, char denome
 
 
 uint32_t track_key(char *track, twobytes key) {
-    char bytes[6] = { 0x00, 0xFF, 0x59, 0x02 };
+    char bytes[6] = { 0x00, 0xFF, META_KEY_SIGNATURE, 0x02 };
     memcpy(&bytes[4], &key, 2);
     return track_copy_bytes(track, bytes, 6);
 }
@@ -101,7 +109,7 @@ uint32_t track_end(char *track, uint32_t delta) {
 
     char *p = add_delta(bytes, delta); /* at most 4 bytes */
     *p++ = 0xFF; /* "meta" chunk */
-    *p++ = 0x2F; /* track end */
+    *p++ = META_TRACK_END;
     *p++ = 0x00; /* no more bytes */
 
     return track_copy_bytes(track, bytes, p - bytes);
