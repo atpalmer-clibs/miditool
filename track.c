@@ -74,10 +74,15 @@ uint32_t track_time_signature(char *track, uint32_t delta, char num, char denome
 }
 
 
-uint32_t track_key(char *track, twobytes key) {
-    char bytes[6] = { 0x00, 0xFF, META_KEY_SIGNATURE, 0x02 };
-    memcpy(&bytes[4], &key, 2);
-    return track_copy_bytes(track, bytes, 6);
+uint32_t track_key(char *track, uint32_t delta, twobytes key) {
+    char bytes[9];
+    char *p = add_delta(bytes, delta);
+    *p++ = 0xFF;
+    *p++ = META_KEY_SIGNATURE;
+    *p++ = 0x02;
+    memcpy(p, &key, 2);
+    p += 2;
+    return track_copy_bytes(track, bytes, p - bytes);
 }
 
 

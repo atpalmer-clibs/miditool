@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     char *track = &buff[bytesused];
     bytesused += track_init(track);
     bytesused += track_tempo(track, 0, 1000000000);
-    bytesused += track_key(track, KEY_C_MAJOR);
+    bytesused += track_key(track, 0, KEY_C_MAJOR);
     bytesused += track_time_signature(track, 0, 2, TIMESIG_DENOM_4);
     bytesused += track_program_no(track, 0, 0, 5);
     bytesused += track_note_on(track, 0, 0, PITCH_C, 0x7F);
