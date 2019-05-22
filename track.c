@@ -80,7 +80,7 @@ uint32_t track_key(char *track, uint32_t delta, twobytes key) {
     *p++ = 0xFF;
     *p++ = META_KEY_SIGNATURE;
     *p++ = 0x02;
-    memcpy(p, &key, 2);
+    *(twobytes *)p = key;
     p += 2;
     return track_copy_bytes(track, bytes, p - bytes);
 }
