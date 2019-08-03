@@ -3,6 +3,15 @@
 #include "track.h"
 #include "typehelp.h"
 
+enum status {
+    /* MIDI events: or-ed with channel */
+    STATUS_PROGRAM_NO = 0xC0,
+    STATUS_NOTE_ON = 0x90,
+    STATUS_NOTE_OFF = 0x80,
+
+    /* Meta events */
+    STATUS_META_CHUNK = 0xFF,
+};
 
 enum meta_event {
     META_TRACK_END = 0x2F,
@@ -51,7 +60,7 @@ uint32_t track_init(char *out) {
 uint32_t track_tempo(char *track, uint32_t delta, uint32_t quart_micros) {
     char bytes[10];
     char *p = add_delta(bytes, delta);
-    *p++ = 0xFF;
+    *p++ = STATUS_META_CHUNK;
     *p++ = META_TEMPO;
     *p++ = 3; /* bytes following... */
     *(threebytes *)p = flip3lower(quart_micros);
@@ -63,7 +72,7 @@ uint32_t track_tempo(char *track, uint32_t delta, uint32_t quart_micros) {
 uint32_t track_time_signature(char *track, uint32_t delta, char num, char denomexp) {
     char bytes[11];
     char *p = add_delta(bytes, delta);
-    *p++ = 0xFF;
+    *p++ = STATUS_META_CHUNK;
     *p++ = META_TIME_SIGNATURE;
     *p++ = 4; /* bytes following... */
     *p++ = num;
@@ -77,7 +86,7 @@ uint32_t track_time_signature(char *track, uint32_t delta, char num, char denome
 uint32_t track_key(char *track, uint32_t delta, twobytes key) {
     char bytes[9];
     char *p = add_delta(bytes, delta);
-    *p++ = 0xFF;
+    *p++ = STATUS_META_CHUNK;
     *p++ = META_KEY_SIGNATURE;
     *p++ = 2; /* bytes following... */
     *(twobytes *)p = key;
@@ -90,18 +99,29 @@ uint32_t track_program_no(char *track, uint32_t delta, char channel, char progra
     char new_bytes[6];
 
     char *p = add_delta(new_bytes, delta); /* at most 4 bytes */
-    *p++ = 0xC0 | channel; /* 0xC0 is program number status (status is or-ed with channel) */
+    *p++ = STATUS_PROGRAM_NO | channel;
     *p++ = program_no;
 
     return track_copy_bytes(track, new_bytes, p - new_bytes);
 }
 
-
 uint32_t track_note_on(char *track, uint32_t delta, char channel, char pitch, char velocity) {
     char new_bytes[7];
 
     char *p = add_delta(new_bytes, delta); /* at most 4 bytes */
-    *p++ = 0x90 | channel; /* 0x90 = note-on status (status is or-ed with channel) */
+    *p++ = STATUS_NOTE_ON | channel;
+    *p++ = pitch;
+    *p++ = velocity;
+
+    return track_copy_bytes(track, new_bytes, p - new_bytes);
+}
+
+
+uint32_t track_note_off(char *track, uint32_t delta, char channel, char pitch, char velocity) {
+    char new_bytes[7];
+
+    char *p = add_delta(new_bytes, delta); /* at most 4 bytes */
+    *p++ = STATUS_NOTE_OFF | channel;
     *p++ = pitch;
     *p++ = velocity;
 
@@ -113,7 +133,7 @@ uint32_t track_end(char *track, uint32_t delta) {
     char bytes[7];
 
     char *p = add_delta(bytes, delta); /* at most 4 bytes */
-    *p++ = 0xFF; /* "meta" chunk */
+    *p++ = STATUS_META_CHUNK;
     *p++ = META_TRACK_END;
     *p++ = 0; /* no more bytes */
 
