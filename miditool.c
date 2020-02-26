@@ -35,6 +35,10 @@ enum timesig_denom {
     TIMESIG_DENOM_32 = 5,
 };
 
+enum velocity {
+    VELOCITY_MAX = 0x7F,
+};
+
 uint32_t fill_header(char *out, uint16_t format, uint16_t tracks, uint16_t division) {
     memcpy(&out[0], "MThd", 4) ;
     *(fourbytes *)&out[4] = flip4(6);
@@ -58,10 +62,10 @@ int main(int argc, char **argv) {
     bytesused += track_time_signature(track, 0, 2, TIMESIG_DENOM_4);
     bytesused += track_program_no(track, 0, 0, 46);
     bytesused += track_note_on(track, 0, 0, PITCH_G3, 0x7F);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_C4, 0x7F);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_E4, 0x7F);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_G4, 0x7F);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_B4, 0x7F);
+    bytesused += track_note_on(track, 0xFF, 0, PITCH_C4, VELOCITY_MAX);
+    bytesused += track_note_on(track, 0xFF, 0, PITCH_E4, VELOCITY_MAX);
+    bytesused += track_note_on(track, 0xFF, 0, PITCH_G4, VELOCITY_MAX);
+    bytesused += track_note_on(track, 0xFF, 0, PITCH_B4, VELOCITY_MAX);
     bytesused += track_end(track, 0);
 
     FILE *f = fopen("out.mid", "wb");
