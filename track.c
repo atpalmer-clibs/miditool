@@ -87,13 +87,13 @@ uint32_t track_time_signature(uint8_t *track, uint32_t delta, uint8_t num, uint8
 }
 
 
-uint32_t track_key(uint8_t *track, uint32_t delta, twobytes key) {
+uint32_t track_key(uint8_t *track, uint32_t delta, uint16_t key) {
     uint8_t bytes[9];
     uint8_t *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
     *p++ = META_KEY_SIGNATURE;
     *p++ = 2; /* bytes following... */
-    *(twobytes *)p = key;
+    *(uint16_t *)p = key;
     p += 2;
     return track_copy_bytes(track, bytes, p - bytes);
 }

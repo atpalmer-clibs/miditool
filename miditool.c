@@ -26,9 +26,9 @@ enum pitch {
 };
 
 
-const twobytes KEY_G_MAJOR = { 0x01, 0x00 };
-const twobytes KEY_C_MAJOR = { 0x00, 0x00 };
-const twobytes KEY_F_MAJOR = { 0x81, 0x00 };
+const uint16_t KEY_G_MAJOR = 0x0100;
+const uint16_t KEY_C_MAJOR = 0x0000;
+const uint16_t KEY_F_MAJOR = 0x8100;
 
 enum timesig_denom {
     TIMESIG_DENOM_1 = 0,
