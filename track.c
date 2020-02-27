@@ -31,20 +31,24 @@ static uint32_t track_copy_bytes(uint8_t *track, uint8_t *bytes, uint32_t num_by
 
 
 static uint8_t *add_delta(uint8_t *p, uint32_t delta) {
-    uint8_t *bytes = (uint8_t *)&delta;
+    /* MIDI delta-time uses variable-width format.
+     * Top bit of each byte indicates more bytes.
+     * Never more than four bytes.
+     */
+    uint8_t *bytes = flip4(delta).bytes;
 
-    bytes[3] = 0x7F & ((bytes[3] << 3) | (bytes[2] >> 5));
-    bytes[2] = 0x7F & ((bytes[2] << 2) | (bytes[1] >> 6));
-    bytes[1] = 0x7F & ((bytes[1] << 1) | (bytes[0] >> 7));
-    bytes[0] = 0x7F & bytes[0];
+    bytes[0] = 0x7F & ((bytes[0] << 3) | (bytes[1] >> 5));
+    bytes[1] = 0x7F & ((bytes[1] << 2) | (bytes[2] >> 6));
+    bytes[2] = 0x7F & ((bytes[2] << 1) | (bytes[3] >> 7));
+    bytes[3] = 0x7F & bytes[3];
 
-    if(bytes[3])
-        *p++ = 0x80 | bytes[3];
-    if(bytes[3] || bytes[2])
-        *p++ = 0x80 | bytes[2];
-    if(bytes[3] || bytes[2] || bytes[1])
+    if(bytes[0])
+        *p++ = 0x80 | bytes[0];
+    if(bytes[0] || bytes[1])
         *p++ = 0x80 | bytes[1];
-    *p++ = bytes[0];
+    if(bytes[0] || bytes[1] || bytes[2])
+        *p++ = 0x80 | bytes[2];
+    *p++ = 0x7F & bytes[3];
 
     return p;
 }
