@@ -3,7 +3,7 @@
 #include "track.h"
 #include "typehelp.h"
 
-enum status {
+enum status: uint8_t {
     /* MIDI events: or-ed with channel */
     STATUS_PROGRAM_NO = 0xC0,
     STATUS_NOTE_ON = 0x90,
@@ -21,9 +21,9 @@ enum meta_event {
 };
 
 
-static uint32_t track_copy_bytes(char *track, char *bytes, uint32_t num_bytes) {
+static uint32_t track_copy_bytes(uint8_t *track, char *bytes, uint32_t num_bytes) {
     fourbytes curr_bytes = flip4(*(uint32_t *)&track[4]);
-    char *p = &track[8 + curr_bytes.value];
+    uint8_t *p = &track[8 + curr_bytes.value];
     memcpy(p, bytes, num_bytes);
     *(fourbytes *)&track[4] = flip4(curr_bytes.value + num_bytes);
     return num_bytes;
@@ -31,7 +31,7 @@ static uint32_t track_copy_bytes(char *track, char *bytes, uint32_t num_bytes) {
 
 
 static char *add_delta(char *p, uint32_t delta) {
-    unsigned char *bytes = (char *)&delta;
+    uint8_t *bytes = (uint8_t *)&delta;
 
     bytes[3] = 0x7F & ((bytes[3] << 3) | (bytes[2] >> 5));
     bytes[2] = 0x7F & ((bytes[2] << 2) | (bytes[1] >> 6));
@@ -50,14 +50,14 @@ static char *add_delta(char *p, uint32_t delta) {
 }
 
 
-uint32_t track_init(char *out) {
+uint32_t track_init(uint8_t  *out) {
     memcpy(&out[0], "MTrk", 4);
     *(fourbytes *)&out[4] = flip4(0);
     return 8;
 }
 
 
-uint32_t track_tempo(char *track, uint32_t delta, uint32_t quart_micros) {
+uint32_t track_tempo(uint8_t *track, uint32_t delta, uint32_t quart_micros) {
     char bytes[10];
     char *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
@@ -69,7 +69,7 @@ uint32_t track_tempo(char *track, uint32_t delta, uint32_t quart_micros) {
 }
 
 
-uint32_t track_time_signature(char *track, uint32_t delta, char num, char denomexp) {
+uint32_t track_time_signature(uint8_t *track, uint32_t delta, char num, char denomexp) {
     char bytes[11];
     char *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
@@ -83,7 +83,7 @@ uint32_t track_time_signature(char *track, uint32_t delta, char num, char denome
 }
 
 
-uint32_t track_key(char *track, uint32_t delta, twobytes key) {
+uint32_t track_key(uint8_t *track, uint32_t delta, twobytes key) {
     char bytes[9];
     char *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
@@ -95,7 +95,7 @@ uint32_t track_key(char *track, uint32_t delta, twobytes key) {
 }
 
 
-uint32_t track_program_no(char *track, uint32_t delta, char channel, char program_no) {
+uint32_t track_program_no(uint8_t *track, uint32_t delta, char channel, char program_no) {
     char new_bytes[6];
 
     char *p = add_delta(new_bytes, delta); /* at most 4 bytes */
@@ -105,7 +105,7 @@ uint32_t track_program_no(char *track, uint32_t delta, char channel, char progra
     return track_copy_bytes(track, new_bytes, p - new_bytes);
 }
 
-uint32_t track_note_on(char *track, uint32_t delta, char channel, char pitch, char velocity) {
+uint32_t track_note_on(uint8_t *track, uint32_t delta, char channel, char pitch, char velocity) {
     char new_bytes[7];
 
     char *p = add_delta(new_bytes, delta); /* at most 4 bytes */
@@ -117,7 +117,7 @@ uint32_t track_note_on(char *track, uint32_t delta, char channel, char pitch, ch
 }
 
 
-uint32_t track_note_off(char *track, uint32_t delta, char channel, char pitch, char velocity) {
+uint32_t track_note_off(uint8_t *track, uint32_t delta, char channel, char pitch, char velocity) {
     char new_bytes[7];
 
     char *p = add_delta(new_bytes, delta); /* at most 4 bytes */
@@ -129,7 +129,7 @@ uint32_t track_note_off(char *track, uint32_t delta, char channel, char pitch, c
 }
 
 
-uint32_t track_end(char *track, uint32_t delta) {
+uint32_t track_end(uint8_t *track, uint32_t delta) {
     char bytes[7];
 
     char *p = add_delta(bytes, delta); /* at most 4 bytes */

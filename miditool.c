@@ -39,7 +39,7 @@ enum velocity {
     VELOCITY_MAX = 0x7F,
 };
 
-uint32_t fill_header(char *out, uint16_t format, uint16_t tracks, uint16_t division) {
+uint32_t fill_header(uint8_t *out, uint16_t format, uint16_t tracks, uint16_t division) {
     memcpy(&out[0], "MThd", 4) ;
     *(fourbytes *)&out[4] = flip4(6);
     *(twobytes *)&out[8] = flip2(format);
@@ -51,11 +51,11 @@ uint32_t fill_header(char *out, uint16_t format, uint16_t tracks, uint16_t divis
 
 int main(int argc, char **argv) {
     uint32_t bytesused = 0;
-    char buff[1024] = {0};
+    uint8_t buff[1024] = {0};
 
     bytesused += fill_header(&buff[bytesused], 0, 1, 10000);
 
-    char *track = &buff[bytesused];
+    uint8_t *track = &buff[bytesused];
     bytesused += track_init(track);
     bytesused += track_tempo(track, 0, 1000000000);
     bytesused += track_key(track, 0, KEY_C_MAJOR);
