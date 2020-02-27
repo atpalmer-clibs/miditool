@@ -105,7 +105,7 @@ uint32_t track_program_no(uint8_t *track, uint32_t delta, uint8_t channel, uint8
     return track_copy_bytes(track, new_bytes, p - new_bytes);
 }
 
-uint32_t track_note_on(uint8_t *track, uint32_t delta, char channel, char pitch, char velocity) {
+uint32_t track_note_on(uint8_t *track, uint32_t delta, uint8_t channel, uint8_t pitch, uint8_t velocity) {
     uint8_t new_bytes[7];
 
     uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
@@ -117,7 +117,7 @@ uint32_t track_note_on(uint8_t *track, uint32_t delta, char channel, char pitch,
 }
 
 
-uint32_t track_note_off(uint8_t *track, uint32_t delta, char channel, char pitch, char velocity) {
+uint32_t track_note_off(uint8_t *track, uint32_t delta, uint8_t channel, uint8_t pitch, uint8_t velocity) {
     uint8_t new_bytes[7];
 
     uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
