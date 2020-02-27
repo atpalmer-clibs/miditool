@@ -3,7 +3,7 @@
 
 
 twobytes flip2(uint16_t in) {
-    char *bytes = (char *)&in;
+    uint8_t *bytes = (uint8_t *)&in;
     twobytes result;
     result.bytes[0] = bytes[1];
     result.bytes[1] = bytes[0];
@@ -12,7 +12,7 @@ twobytes flip2(uint16_t in) {
 
 
 fourbytes flip4(uint32_t in) {
-    char *bytes = (char *)&in;
+    uint8_t *bytes = (uint8_t *)&in;
     fourbytes result;
     result.bytes[0] = bytes[3];
     result.bytes[1] = bytes[2];
@@ -23,7 +23,7 @@ fourbytes flip4(uint32_t in) {
 
 
 threebytes flip3lower(uint32_t in) {
-    char *bytes = (char *)&in;
+    uint8_t *bytes = (uint8_t *)&in;
     threebytes result;
     result.bytes[0] = bytes[3];
     result.bytes[1] = bytes[2];
