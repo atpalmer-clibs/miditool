@@ -4,6 +4,8 @@
 #include "track.h"
 #include "typehelp.h"
 
+#define BPM_TO_MICROS(bpm) ((uint32_t)((60.0 * 1000000.0)/(double)bpm))
+
 enum pitch {
     PITCH_G3 = 0x37,
     PITCH_C4 = 0x3C,
@@ -57,7 +59,7 @@ int main(void) {
 
     uint8_t *track = &buff[bytesused];
     bytesused += track_init(track);
-    bytesused += track_tempo(track, 0, 1000000000);
+    bytesused += track_tempo(track, 0, BPM_TO_MICROS(60));
     bytesused += track_key(track, 0, KEY_C_MAJOR);
     bytesused += track_time_signature(track, 0, 2, TIMESIG_DENOM_4);
     bytesused += track_program_no(track, 0, 0, 46);
