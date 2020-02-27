@@ -44,11 +44,11 @@ enum velocity {
 };
 
 uint32_t fill_header(uint8_t *out, uint16_t format, uint16_t tracks, uint16_t division) {
-    memcpy(&out[0], "MThd", 4) ;
-    *(fourbytes *)&out[4] = flip4(6);
-    *(twobytes *)&out[8] = flip2(format);
-    *(twobytes *)&out[10] = flip2(tracks);
-    *(twobytes *)&out[12] = flip2(division);
+    memcpy(&out[0], "MThd", 4);
+    memcpy(&out[4], flip4(6).bytes, 4);
+    memcpy(&out[8], flip2(format).bytes, 2);
+    memcpy(&out[10], flip2(tracks).bytes, 2);
+    memcpy(&out[12], flip2(division).bytes, 2);
     return 14;
 }
 

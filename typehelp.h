@@ -5,6 +5,7 @@
 
 typedef struct twobytes {
     uint8_t bytes[2];
+    uint16_t value;
 } twobytes;
 
 typedef struct threebytes {
