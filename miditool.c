@@ -6,6 +6,8 @@
 
 #define BPM_TO_MICROS(bpm) ((uint32_t)((60.0 * 1000000.0)/(double)bpm))
 
+#define CHANNEL(channel) ((uint8_t)(channel - 1))
+
 enum pitch {
     PITCH_G3 = 0x37,
     PITCH_C4 = 0x3C,
@@ -62,12 +64,12 @@ int main(void) {
     bytesused += track_tempo(track, 0, BPM_TO_MICROS(60));
     bytesused += track_key(track, 0, KEY_C_MAJOR);
     bytesused += track_time_signature(track, 0, 2, TIMESIG_DENOM_4);
-    bytesused += track_program_no(track, 0, 0, 46);
-    bytesused += track_note_on(track, 0, 0, PITCH_G3, VELOCITY_MAX);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_C4, VELOCITY_MAX);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_E4, VELOCITY_MAX);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_G4, VELOCITY_MAX);
-    bytesused += track_note_on(track, 0xFF, 0, PITCH_B4, VELOCITY_MAX);
+    bytesused += track_program_no(track, 0, CHANNEL(1), 46);
+    bytesused += track_note_on(track, 0, CHANNEL(1), PITCH_G3, VELOCITY_MAX);
+    bytesused += track_note_on(track, 0xFF, CHANNEL(1), PITCH_C4, VELOCITY_MAX);
+    bytesused += track_note_on(track, 0xFF, CHANNEL(1), PITCH_E4, VELOCITY_MAX);
+    bytesused += track_note_on(track, 0xFF, CHANNEL(1), PITCH_G4, VELOCITY_MAX);
+    bytesused += track_note_on(track, 0xFF, CHANNEL(1), PITCH_B4, VELOCITY_MAX);
     bytesused += track_end(track, 0);
 
     FILE *f = fopen("out.mid", "wb");
