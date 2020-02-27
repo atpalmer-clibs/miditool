@@ -69,7 +69,7 @@ uint32_t track_tempo(uint8_t *track, uint32_t delta, uint32_t quart_micros) {
 }
 
 
-uint32_t track_time_signature(uint8_t *track, uint32_t delta, char num, char denomexp) {
+uint32_t track_time_signature(uint8_t *track, uint32_t delta, uint8_t num, uint8_t denomexp) {
     uint8_t bytes[11];
     uint8_t *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
