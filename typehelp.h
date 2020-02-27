@@ -4,15 +4,15 @@
 #include <stdint.h>
 
 typedef struct twobytes {
-    char bytes[2];
+    uint8_t bytes[2];
 } twobytes;
 
 typedef struct threebytes {
-    char bytes[3];
+    uint8_t bytes[3];
 } threebytes;
 
 typedef union fourbytes {
-    char bytes[4];
+    uint8_t bytes[4];
     uint32_t value;
 } fourbytes;
 
