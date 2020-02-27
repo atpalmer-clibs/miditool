@@ -3,7 +3,7 @@
 #include "track.h"
 #include "typehelp.h"
 
-enum status: uint8_t {
+enum status {
     /* MIDI events: or-ed with channel */
     STATUS_PROGRAM_NO = 0xC0,
     STATUS_NOTE_ON = 0x90,

@@ -1,7 +1,7 @@
 P=miditool
 OBJECTS=miditool.o track.o typehelp.o
 CC=gcc
-CFLAGS=-g -O0 -Wall -Wextra
+CFLAGS=-g -O0 -Wall -Wextra -pedantic
 
 $(P): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $(P) $(OBJECTS)
