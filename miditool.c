@@ -3,6 +3,7 @@
 #include <string.h>
 #include "track.h"
 #include "typehelp.h"
+#include "bytebuff.h"
 
 #define BPM_TO_MICROS(bpm) ((uint32_t)((60.0 * 1000000.0)/(double)bpm))
 
@@ -55,7 +56,9 @@ uint32_t fill_header(uint8_t *out, uint16_t format, uint16_t tracks, uint16_t di
 
 int main(void) {
     uint32_t bytesused = 0;
-    uint8_t buff[1024] = {0};
+
+    struct bytebuff *bytebuff = bytebuff_new();
+    uint8_t *buff = bytebuff->bytes;
 
     bytesused += fill_header(&buff[bytesused], 0, 1, 10000);
 
@@ -73,8 +76,9 @@ int main(void) {
     bytesused += track_end(track, 0);
 
     FILE *f = fopen("out.mid", "wb");
-    fwrite(&buff, bytesused, 1, f);
+    fwrite(buff, bytesused, 1, f);
     fclose(f);
 
+    bytebuff_free(bytebuff);
     printf("Done\n");
 }
