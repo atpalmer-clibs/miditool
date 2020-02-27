@@ -95,7 +95,7 @@ uint32_t track_key(uint8_t *track, uint32_t delta, twobytes key) {
 }
 
 
-uint32_t track_program_no(uint8_t *track, uint32_t delta, char channel, char program_no) {
+uint32_t track_program_no(uint8_t *track, uint32_t delta, uint8_t channel, uint8_t program_no) {
     uint8_t new_bytes[6];
 
     uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
