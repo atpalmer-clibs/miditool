@@ -49,7 +49,7 @@ uint32_t fill_header(uint8_t *out, uint16_t format, uint16_t tracks, uint16_t di
 }
 
 
-int main(int argc, char **argv) {
+int main(void) {
     uint32_t bytesused = 0;
     uint8_t buff[1024] = {0};
 
