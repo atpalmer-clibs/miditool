@@ -2,6 +2,7 @@
 #include <string.h>
 #include "track.h"
 #include "typehelp.h"
+#include "bytebuff.h"
 
 enum status {
     /* MIDI events: or-ed with channel */
@@ -54,9 +55,9 @@ static uint8_t *add_delta(uint8_t *p, uint32_t delta) {
 }
 
 
-uint32_t track_init(uint8_t  *out) {
-    memcpy(&out[0], "MTrk", 4);
-    *(fourbytes *)&out[4] = flip4(0);
+uint32_t track_init(struct bytebuff *buff) {
+    bytebuff_append_string(buff, "MTrk");
+    bytebuff_append_uint32(buff, 0);
     return 8;
 }
 

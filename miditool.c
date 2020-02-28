@@ -73,7 +73,7 @@ int main(void) {
     bytesused += fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
     uint8_t *track = &buff[bytesused];
-    bytesused += track_init(track);
+    bytesused += track_init(bytebuff);
     bytesused += track_tempo(track, 0, BPM_TO_MICROS(60));
     bytesused += track_key(track, 0, KEY_C_MAJOR);
     bytesused += track_time_signature(track, 0, 2, TIMESIG_DENOM_4);
