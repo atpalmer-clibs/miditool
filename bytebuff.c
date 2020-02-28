@@ -21,7 +21,7 @@ void bytebuff_free(struct bytebuff *this) {
 
 void bytebuff_append_raw(struct bytebuff *this, void *data, size_t count) {
     assert(this->p - this->bytes < this->cap);
-    memcpy(this->bytes, data, count);
+    memcpy(this->p, data, count);
     this->p += count;
 }
 
