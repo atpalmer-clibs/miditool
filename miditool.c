@@ -44,7 +44,8 @@ enum velocity {
     VELOCITY_MAX = 0x7F,
 };
 
-uint32_t fill_header(uint8_t *out, uint16_t format, uint16_t tracks, uint16_t division) {
+uint32_t fill_header(struct bytebuff *buff, uint16_t format, uint16_t tracks, uint16_t division) {
+    uint8_t *out = buff->bytes;
     memcpy(&out[0], "MThd", 4);
     memcpy(&out[4], flip4(6).bytes, 4);
     memcpy(&out[8], flip2(format).bytes, 2);
@@ -60,7 +61,7 @@ int main(void) {
     struct bytebuff *bytebuff = bytebuff_new();
     uint8_t *buff = bytebuff->bytes;
 
-    bytesused += fill_header(&buff[bytesused], 0, 1, 10000);
+    bytesused += fill_header(bytebuff, 0, 1, 10000);
 
     uint8_t *track = &buff[bytesused];
     bytesused += track_init(track);
