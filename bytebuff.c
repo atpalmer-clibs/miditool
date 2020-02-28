@@ -24,3 +24,8 @@ void bytebuff_append_raw(struct bytebuff *this, void *data, size_t count) {
     memcpy(this->bytes, data, count);
     this->p += count;
 }
+
+void bytebuff_append_string(struct bytebuff *this, char *data) {
+    size_t count = strlen(data);
+    bytebuff_append_raw(this, data, count);
+}
