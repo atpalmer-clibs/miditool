@@ -44,6 +44,12 @@ enum velocity {
     VELOCITY_MAX = 0x7F,
 };
 
+enum midi_format {
+    FORMAT_SINGLE_TRACK = 0,
+    FORMAT_MULTI_TRACK = 1,
+    FORMAT_MULTI_SONG = 2,  /* i.e. series of type 0 files */
+};
+
 uint32_t fill_header(struct bytebuff *buff, uint16_t format, uint16_t tracks, uint16_t division) {
     bytebuff_append_string(buff, "MThd");
     bytebuff_append_uint32(buff, 6);        /* num bytes following in header */
@@ -60,7 +66,7 @@ int main(void) {
     struct bytebuff *bytebuff = bytebuff_new();
     uint8_t *buff = bytebuff->bytes;
 
-    bytesused += fill_header(bytebuff, 0, 1, 10000);
+    bytesused += fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, 10000);
 
     uint8_t *track = &buff[bytesused];
     bytesused += track_init(track);
