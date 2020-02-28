@@ -35,3 +35,8 @@ void bytebuff_append_uint32(struct bytebuff *this, uint32_t value) {
     uint8_t *data = flip4(value).bytes;
     bytebuff_append_raw(this, data, 4);
 }
+
+void bytebuff_append_uint16(struct bytebuff *this, uint16_t value) {
+    uint8_t *data = flip2(value).bytes;
+    bytebuff_append_raw(this, data, 2);
+}
