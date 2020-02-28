@@ -50,6 +50,10 @@ enum midi_format {
     FORMAT_MULTI_SONG = 2,  /* i.e. series of type 0 files */
 };
 
+#define DIVISION_TICKS_PER_BEAT(ticks) (ticks)
+#define DIVISION_SMPTE(value) (-1 * (value))
+
+
 uint32_t fill_header(struct bytebuff *buff, uint16_t format, uint16_t tracks, uint16_t division) {
     bytebuff_append_string(buff, "MThd");
     bytebuff_append_uint32(buff, 6);        /* num bytes following in header */
@@ -66,7 +70,7 @@ int main(void) {
     struct bytebuff *bytebuff = bytebuff_new();
     uint8_t *buff = bytebuff->bytes;
 
-    bytesused += fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, 10000);
+    bytesused += fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
     uint8_t *track = &buff[bytesused];
     bytesused += track_init(track);
