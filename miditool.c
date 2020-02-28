@@ -45,12 +45,11 @@ enum velocity {
 };
 
 uint32_t fill_header(struct bytebuff *buff, uint16_t format, uint16_t tracks, uint16_t division) {
-    uint8_t *out = buff->bytes;
     bytebuff_append_string(buff, "MThd");
-    memcpy(&out[4], flip4(6).bytes, 4);
-    memcpy(&out[8], flip2(format).bytes, 2);
-    memcpy(&out[10], flip2(tracks).bytes, 2);
-    memcpy(&out[12], flip2(division).bytes, 2);
+    bytebuff_append_raw(buff, flip4(6).bytes, 4);
+    bytebuff_append_raw(buff, flip2(format).bytes, 2);
+    bytebuff_append_raw(buff, flip2(tracks).bytes, 2);
+    bytebuff_append_raw(buff, flip2(division).bytes, 2);
     return 14;
 }
 
