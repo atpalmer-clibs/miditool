@@ -11,5 +11,6 @@ struct bytebuff {
 
 struct bytebuff *bytebuff_new(void);
 void bytebuff_free(struct bytebuff *this);
+void bytebuff_append_raw(struct bytebuff *this, void *data, size_t count);
 
 #endif
