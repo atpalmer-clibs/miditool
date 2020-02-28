@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bytebuff.h"
+#include "typehelp.h"
 
 const int INITIAL_CAP = 1024;
 
@@ -28,4 +29,9 @@ void bytebuff_append_raw(struct bytebuff *this, void *data, size_t count) {
 void bytebuff_append_string(struct bytebuff *this, char *data) {
     size_t count = strlen(data);
     bytebuff_append_raw(this, data, count);
+}
+
+void bytebuff_append_uint32(struct bytebuff *this, uint32_t value) {
+    uint8_t *data = flip4(value).bytes;
+    bytebuff_append_raw(this, data, 4);
 }
