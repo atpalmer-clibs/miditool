@@ -26,9 +26,6 @@ int main(void) {
     bytesused += fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
     MidiTrack *trackobj = track_start(bytebuff);
-
-    uint8_t *track = &buff[bytesused];
-
     bytesused += 8;
 
     bytesused += track_tempo(trackobj, 0, BPM_TO_MICROS(60));
