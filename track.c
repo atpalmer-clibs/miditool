@@ -99,7 +99,9 @@ uint32_t track_key(MidiTrack *this, uint32_t delta, uint16_t key) {
 }
 
 
-uint32_t track_time_signature(uint8_t *track, uint32_t delta, uint8_t num, uint8_t denomexp) {
+uint32_t track_time_signature(MidiTrack *this, uint32_t delta, uint8_t num, uint8_t denomexp) {
+    void *track = &this->buff->bytes[this->head];
+
     uint8_t bytes[11];
     uint8_t *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
