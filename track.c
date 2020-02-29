@@ -115,13 +115,13 @@ uint32_t track_time_signature(MidiTrack *this, uint32_t delta, uint8_t num, uint
 }
 
 
-uint32_t track_program_no(uint8_t *track, uint32_t delta, uint8_t channel, uint8_t program_no) {
-    uint8_t new_bytes[6];
+uint32_t track_program_no(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t program_no) {
+    void *track = &this->buff->bytes[this->head];
 
+    uint8_t new_bytes[6];
     uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
     *p++ = STATUS_PROGRAM_NO | channel;
     *p++ = program_no;
-
     return track_copy_bytes(track, new_bytes, p - new_bytes);
 }
 
