@@ -23,7 +23,9 @@ enum meta_event {
 };
 
 
-static uint32_t track_copy_bytes(uint8_t *track, uint8_t *bytes, uint32_t num_bytes) {
+static uint32_t track_copy_bytes(MidiTrack *this, uint8_t *bytes, uint32_t num_bytes) {
+    uint8_t *track = &this->buff->bytes[this->head];
+
     fourbytes curr_bytes = flip4(*(uint32_t *)&track[4]);
     uint8_t *p = &track[8 + curr_bytes.value];
     memcpy(p, bytes, num_bytes);
@@ -72,8 +74,6 @@ void track_free(MidiTrack *this) {
 
 
 uint32_t track_tempo(MidiTrack *this, uint32_t delta, uint32_t quart_micros) {
-    void *track = &this->buff->bytes[this->head];
-
     uint8_t bytes[10];
     uint8_t *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
@@ -81,13 +81,11 @@ uint32_t track_tempo(MidiTrack *this, uint32_t delta, uint32_t quart_micros) {
     *p++ = 3; /* bytes following... */
     *(threebytes *)p = flip3lower(quart_micros);
     p += 3;
-    return track_copy_bytes(track, bytes, p - bytes);
+    return track_copy_bytes(this, bytes, p - bytes);
 }
 
 
 uint32_t track_key(MidiTrack *this, uint32_t delta, uint16_t key) {
-    void *track = &this->buff->bytes[this->head];
-
     uint8_t bytes[9];
     uint8_t *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
@@ -95,13 +93,11 @@ uint32_t track_key(MidiTrack *this, uint32_t delta, uint16_t key) {
     *p++ = 2; /* bytes following... */
     *(uint16_t *)p = key;
     p += 2;
-    return track_copy_bytes(track, bytes, p - bytes);
+    return track_copy_bytes(this, bytes, p - bytes);
 }
 
 
 uint32_t track_time_signature(MidiTrack *this, uint32_t delta, uint8_t num, uint8_t denomexp) {
-    void *track = &this->buff->bytes[this->head];
-
     uint8_t bytes[11];
     uint8_t *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
@@ -111,52 +107,44 @@ uint32_t track_time_signature(MidiTrack *this, uint32_t delta, uint8_t num, uint
     *p++ = denomexp;
     *p++ = 24;
     *p++ = 8;
-    return track_copy_bytes(track, bytes, p - bytes);
+    return track_copy_bytes(this, bytes, p - bytes);
 }
 
 
 uint32_t track_program_no(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t program_no) {
-    void *track = &this->buff->bytes[this->head];
-
     uint8_t new_bytes[6];
     uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
     *p++ = STATUS_PROGRAM_NO | channel;
     *p++ = program_no;
-    return track_copy_bytes(track, new_bytes, p - new_bytes);
+    return track_copy_bytes(this, new_bytes, p - new_bytes);
 }
 
 
 uint32_t track_note_on(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t pitch, uint8_t velocity) {
-    void *track = &this->buff->bytes[this->head];
-
     uint8_t new_bytes[7];
     uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
     *p++ = STATUS_NOTE_ON | channel;
     *p++ = pitch;
     *p++ = velocity;
-    return track_copy_bytes(track, new_bytes, p - new_bytes);
+    return track_copy_bytes(this, new_bytes, p - new_bytes);
 }
 
 
 uint32_t track_note_off(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t pitch, uint8_t velocity) {
-    void *track = &this->buff->bytes[this->head];
-
     uint8_t new_bytes[7];
     uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
     *p++ = STATUS_NOTE_OFF | channel;
     *p++ = pitch;
     *p++ = velocity;
-    return track_copy_bytes(track, new_bytes, p - new_bytes);
+    return track_copy_bytes(this, new_bytes, p - new_bytes);
 }
 
 
 uint32_t track_end(MidiTrack *this, uint32_t delta) {
-    void *track = &this->buff->bytes[this->head];
-
     uint8_t bytes[7];
     uint8_t *p = add_delta(bytes, delta); /* at most 4 bytes */
     *p++ = STATUS_META_CHUNK;
     *p++ = META_TRACK_END;
     *p++ = 0; /* no more bytes */
-    return track_copy_bytes(track, bytes, p - bytes);
+    return track_copy_bytes(this, bytes, p - bytes);
 }
