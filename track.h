@@ -9,7 +9,7 @@ typedef struct track {
     size_t head;
 } MidiTrack;
 
-MidiTrack *track_new(struct bytebuff *buff);
+MidiTrack *track_start(struct bytebuff *buff);
 void track_free(MidiTrack *this);
 
 uint32_t track_time_signature(uint8_t *track, uint32_t delta, uint8_t num, uint8_t denomexp);

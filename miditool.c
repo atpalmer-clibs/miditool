@@ -72,7 +72,7 @@ int main(void) {
 
     bytesused += fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
-    MidiTrack *trackobj = track_new(bytebuff);
+    MidiTrack *trackobj = track_start(bytebuff);
 
     uint8_t *track = &buff[bytesused];
 

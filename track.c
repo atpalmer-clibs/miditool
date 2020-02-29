@@ -56,7 +56,7 @@ static uint8_t *add_delta(uint8_t *p, uint32_t delta) {
 }
 
 
-MidiTrack *track_new(struct bytebuff *buff) {
+MidiTrack *track_start(struct bytebuff *buff) {
     MidiTrack *new = malloc(sizeof *new);
     new->buff = buff;
     new->head = buff->p - buff->bytes;
