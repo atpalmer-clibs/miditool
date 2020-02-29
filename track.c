@@ -23,13 +23,19 @@ enum meta_event {
 };
 
 
+static uint32_t track_get_bytes(MidiTrack *this) {
+    uint8_t *track = &this->buff->bytes[this->head];
+    return flip4(*(uint32_t *)&track[4]).value;
+}
+
+
 static uint32_t track_copy_bytes(MidiTrack *this, uint8_t *bytes, uint32_t num_bytes) {
     uint8_t *track = &this->buff->bytes[this->head];
 
-    fourbytes curr_bytes = flip4(*(uint32_t *)&track[4]);
-    uint8_t *p = &track[8 + curr_bytes.value];
+    uint32_t curr_bytes = track_get_bytes(this);
+    uint8_t *p = &track[8 + curr_bytes];
     memcpy(p, bytes, num_bytes);
-    *(fourbytes *)&track[4] = flip4(curr_bytes.value + num_bytes);
+    *(fourbytes *)&track[4] = flip4(curr_bytes + num_bytes);
     return num_bytes;
 }
 
