@@ -4,13 +4,13 @@
 #include <stdint.h>
 #include "bytebuff.h"
 
-struct track {
+typedef struct track {
     struct bytebuff *buff;
     size_t head;
-};
+} MidiTrack;
 
-struct track *track_new(struct bytebuff *buff);
-void track_free(struct track *this);
+MidiTrack *track_new(struct bytebuff *buff);
+void track_free(MidiTrack *this);
 
 uint32_t track_time_signature(uint8_t *track, uint32_t delta, uint8_t num, uint8_t denomexp);
 uint32_t track_tempo(uint8_t *track, uint32_t delta, uint32_t quarter_micros);

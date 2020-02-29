@@ -56,8 +56,8 @@ static uint8_t *add_delta(uint8_t *p, uint32_t delta) {
 }
 
 
-struct track *track_new(struct bytebuff *buff) {
-    struct track *new = malloc(sizeof *new);
+MidiTrack *track_new(struct bytebuff *buff) {
+    MidiTrack *new = malloc(sizeof *new);
     new->buff = buff;
     new->head = buff->p - buff->bytes;
     bytebuff_append_string(buff, "MTrk");
@@ -66,7 +66,7 @@ struct track *track_new(struct bytebuff *buff) {
 }
 
 
-void track_free(struct track *this) {
+void track_free(MidiTrack *this) {
     free(this);
 }
 
