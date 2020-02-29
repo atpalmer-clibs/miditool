@@ -31,7 +31,7 @@ int main(void) {
 
     bytesused += 8;
 
-    bytesused += track_tempo(track, 0, BPM_TO_MICROS(60));
+    bytesused += track_tempo(trackobj, 0, BPM_TO_MICROS(60));
     bytesused += track_key(track, 0, KEY_C_MAJOR);
     bytesused += track_time_signature(track, 0, 2, TIMESIG_DENOM_4);
     bytesused += track_program_no(track, 0, CHANNEL(1), 46);

@@ -71,7 +71,9 @@ void track_free(MidiTrack *this) {
 }
 
 
-uint32_t track_tempo(uint8_t *track, uint32_t delta, uint32_t quart_micros) {
+uint32_t track_tempo(MidiTrack *this, uint32_t delta, uint32_t quart_micros) {
+    void *track = &this->buff->bytes[this->head];
+
     uint8_t bytes[10];
     uint8_t *p = add_delta(bytes, delta);
     *p++ = STATUS_META_CHUNK;
