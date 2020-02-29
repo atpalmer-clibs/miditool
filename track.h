@@ -4,7 +4,14 @@
 #include <stdint.h>
 #include "bytebuff.h"
 
-uint32_t track_init(struct bytebuff *buff);
+struct track {
+    struct bytebuff *buff;
+    size_t head;
+};
+
+struct track *track_new(struct bytebuff *buff);
+void track_free(struct track *this);
+
 uint32_t track_time_signature(uint8_t *track, uint32_t delta, uint8_t num, uint8_t denomexp);
 uint32_t track_tempo(uint8_t *track, uint32_t delta, uint32_t quarter_micros);
 uint32_t track_key(uint8_t *track, uint32_t delta, uint16_t key);

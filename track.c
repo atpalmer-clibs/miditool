@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include "track.h"
 #include "typehelp.h"
@@ -55,10 +56,18 @@ static uint8_t *add_delta(uint8_t *p, uint32_t delta) {
 }
 
 
-uint32_t track_init(struct bytebuff *buff) {
+struct track *track_new(struct bytebuff *buff) {
+    struct track *new = malloc(sizeof *new);
+    new->buff = buff;
+    new->head = buff->p - buff->bytes;
     bytebuff_append_string(buff, "MTrk");
     bytebuff_append_uint32(buff, 0);
-    return 8;
+    return new;
+}
+
+
+void track_free(struct track *this) {
+    free(this);
 }
 
 
