@@ -40,7 +40,7 @@ int main(void) {
     bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_E4, VELOCITY_MAX);
     bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_G4, VELOCITY_MAX);
     bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_B4, VELOCITY_MAX);
-    bytesused += track_end(track, 0);
+    bytesused += track_end(trackobj, 0);
 
     FILE *f = fopen("out.mid", "wb");
     fwrite(buff, bytesused, 1, f);

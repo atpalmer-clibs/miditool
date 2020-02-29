@@ -150,13 +150,13 @@ uint32_t track_note_off(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_
 }
 
 
-uint32_t track_end(uint8_t *track, uint32_t delta) {
-    uint8_t bytes[7];
+uint32_t track_end(MidiTrack *this, uint32_t delta) {
+    void *track = &this->buff->bytes[this->head];
 
+    uint8_t bytes[7];
     uint8_t *p = add_delta(bytes, delta); /* at most 4 bytes */
     *p++ = STATUS_META_CHUNK;
     *p++ = META_TRACK_END;
     *p++ = 0; /* no more bytes */
-
     return track_copy_bytes(track, bytes, p - bytes);
 }

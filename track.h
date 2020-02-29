@@ -17,7 +17,6 @@ uint32_t track_time_signature(MidiTrack *this, uint32_t delta, uint8_t num, uint
 uint32_t track_program_no(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t program_no);
 uint32_t track_note_on(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t pitch, uint8_t velocity);
 uint32_t track_note_off(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t pitch, uint8_t velocity);
-
-uint32_t track_end(uint8_t *track, uint32_t delta);
+uint32_t track_end(MidiTrack *this, uint32_t delta);
 
 #endif
