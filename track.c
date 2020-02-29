@@ -85,6 +85,20 @@ uint32_t track_tempo(MidiTrack *this, uint32_t delta, uint32_t quart_micros) {
 }
 
 
+uint32_t track_key(MidiTrack *this, uint32_t delta, uint16_t key) {
+    void *track = &this->buff->bytes[this->head];
+
+    uint8_t bytes[9];
+    uint8_t *p = add_delta(bytes, delta);
+    *p++ = STATUS_META_CHUNK;
+    *p++ = META_KEY_SIGNATURE;
+    *p++ = 2; /* bytes following... */
+    *(uint16_t *)p = key;
+    p += 2;
+    return track_copy_bytes(track, bytes, p - bytes);
+}
+
+
 uint32_t track_time_signature(uint8_t *track, uint32_t delta, uint8_t num, uint8_t denomexp) {
     uint8_t bytes[11];
     uint8_t *p = add_delta(bytes, delta);
@@ -95,18 +109,6 @@ uint32_t track_time_signature(uint8_t *track, uint32_t delta, uint8_t num, uint8
     *p++ = denomexp;
     *p++ = 24;
     *p++ = 8;
-    return track_copy_bytes(track, bytes, p - bytes);
-}
-
-
-uint32_t track_key(uint8_t *track, uint32_t delta, uint16_t key) {
-    uint8_t bytes[9];
-    uint8_t *p = add_delta(bytes, delta);
-    *p++ = STATUS_META_CHUNK;
-    *p++ = META_KEY_SIGNATURE;
-    *p++ = 2; /* bytes following... */
-    *(uint16_t *)p = key;
-    p += 2;
     return track_copy_bytes(track, bytes, p - bytes);
 }
 
