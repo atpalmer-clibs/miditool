@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -38,6 +39,8 @@ int main(void) {
     bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_G4, VELOCITY_MAX);
     bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_B4, VELOCITY_MAX);
     bytesused += track_end(trackobj, 0);
+
+    assert(bytebuff->p - bytebuff->bytes == bytesused);
 
     FILE *f = fopen("out.mid", "wb");
     fwrite(buff, bytesused, 1, f);
