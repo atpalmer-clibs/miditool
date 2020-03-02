@@ -19,28 +19,24 @@ uint32_t fill_header(struct bytebuff *buff, uint16_t format, uint16_t tracks, ui
 
 
 int main(void) {
-    uint32_t bytesused = 0;
-
     struct bytebuff *bytebuff = bytebuff_new();
     uint8_t *buff = bytebuff->bytes;
 
-    bytesused += fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
+    fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
     MidiTrack *trackobj = track_start(bytebuff);
-    bytesused += 8;
+    track_tempo(trackobj, 0, BPM_TO_MICROS(60));
+    track_key(trackobj, 0, KEY_C_MAJOR);
+    track_time_signature(trackobj, 0, 2, TIMESIG_DENOM_4);
+    track_program_no(trackobj, 0, CHANNEL(1), 46);
+    track_note_on(trackobj, 0, CHANNEL(1), PITCH_G3, VELOCITY_MAX);
+    track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_C4, VELOCITY_MAX);
+    track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_E4, VELOCITY_MAX);
+    track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_G4, VELOCITY_MAX);
+    track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_B4, VELOCITY_MAX);
+    track_end(trackobj, 0);
 
-    bytesused += track_tempo(trackobj, 0, BPM_TO_MICROS(60));
-    bytesused += track_key(trackobj, 0, KEY_C_MAJOR);
-    bytesused += track_time_signature(trackobj, 0, 2, TIMESIG_DENOM_4);
-    bytesused += track_program_no(trackobj, 0, CHANNEL(1), 46);
-    bytesused += track_note_on(trackobj, 0, CHANNEL(1), PITCH_G3, VELOCITY_MAX);
-    bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_C4, VELOCITY_MAX);
-    bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_E4, VELOCITY_MAX);
-    bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_G4, VELOCITY_MAX);
-    bytesused += track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_B4, VELOCITY_MAX);
-    bytesused += track_end(trackobj, 0);
-
-    assert(bytebuff->p - bytebuff->bytes == bytesused);
+    uint32_t bytesused = bytebuff->p - bytebuff->bytes;
 
     FILE *f = fopen("out.mid", "wb");
     fwrite(buff, bytesused, 1, f);
