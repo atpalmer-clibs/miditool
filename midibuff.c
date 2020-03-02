@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "midibuff.h"
@@ -60,4 +61,10 @@ void midibuff_append_header(MidiBuffer *this, uint16_t format, uint16_t tracks, 
     midibuff_append_uint16(this, format);   /* 0=single-track; 1=multi-track; 2=multi-song */
     midibuff_append_uint16(this, tracks);   /* number of tracks following header */
     midibuff_append_uint16(this, division); /* +=ticks per beat; -=SMPTE units */
+}
+
+void midibuff_save_as(MidiBuffer *this, const char *filename) {
+    FILE *f = fopen(filename, "wb");
+    fwrite(this->bytes, this->used, 1, f);
+    fclose(f);
 }
