@@ -19,7 +19,6 @@ void fill_header(struct bytebuff *buff, uint16_t format, uint16_t tracks, uint16
 
 int main(void) {
     struct bytebuff *bytebuff = bytebuff_new();
-    uint8_t *buff = bytebuff->bytes;
 
     fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
@@ -35,10 +34,8 @@ int main(void) {
     track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_B4, VELOCITY_MAX);
     track_end(trackobj, 0);
 
-    uint32_t bytesused = bytebuff->p - bytebuff->bytes;
-
     FILE *f = fopen("out.mid", "wb");
-    fwrite(buff, bytesused, 1, f);
+    fwrite(bytebuff->bytes, bytebuff->p - bytebuff->bytes, 1, f);
     fclose(f);
 
     track_free(trackobj);
