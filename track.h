@@ -2,7 +2,7 @@
 #define TRACK_H
 
 #include <stdint.h>
-#include "bytebuff.h"
+#include "midibuff.h"
 
 typedef struct track {
     MidiBuffer *buff;

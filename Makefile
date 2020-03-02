@@ -1,5 +1,5 @@
 P=miditool
-OBJECTS=main.o bytebuff.o track.o typehelp.o
+OBJECTS=main.o midibuff.o track.o typehelp.o
 CC=gcc
 CFLAGS=-g -O0 -Wall -Wextra -pedantic
 

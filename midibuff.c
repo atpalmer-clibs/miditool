@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include "bytebuff.h"
+#include "midibuff.h"
 #include "typehelp.h"
 
 #define NEXT_BYTE(this) ((this)->bytes[(this)->used])

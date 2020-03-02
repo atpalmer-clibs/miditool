@@ -3,7 +3,7 @@
 #include <string.h>
 #include "track.h"
 #include "typehelp.h"
-#include "bytebuff.h"
+#include "midibuff.h"
 
 enum status {
     /* MIDI events: or-ed with channel */

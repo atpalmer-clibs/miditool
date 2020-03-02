@@ -5,7 +5,7 @@
 #include "constants.h"
 #include "track.h"
 #include "typehelp.h"
-#include "bytebuff.h"
+#include "midibuff.h"
 
 
 void fill_header(MidiBuffer *buff, uint16_t format, uint16_t tracks, uint16_t division) {
