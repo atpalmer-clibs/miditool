@@ -8,7 +8,7 @@
 
 const int INITIAL_CAP = 1024;
 
-MidiBuffer *midibuff_new(void) {
+MidiBuffer *midibuff_new_empty(void) {
     MidiBuffer *new = malloc(sizeof *new);
     new->bytes = malloc(INITIAL_CAP);
     new->used = 0;

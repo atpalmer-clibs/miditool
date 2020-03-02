@@ -18,7 +18,7 @@ void fill_header(MidiBuffer *buff, uint16_t format, uint16_t tracks, uint16_t di
 
 
 int main(void) {
-    MidiBuffer *buff = midibuff_new();
+    MidiBuffer *buff = midibuff_new_empty();
 
     fill_header(buff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
