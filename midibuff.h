@@ -16,5 +16,6 @@ void midibuff_append_string(MidiBuffer *this, char *data);
 void midibuff_append_uint32(MidiBuffer *this, uint32_t data);
 void midibuff_append_uint16(MidiBuffer *this, uint16_t data);
 void midibuff_append_uint8(MidiBuffer *this, uint8_t data);
+void midibuff_append_header(MidiBuffer *buff, uint16_t format, uint16_t tracks, uint16_t division);
 
 #endif

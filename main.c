@@ -8,19 +8,10 @@
 #include "midibuff.h"
 
 
-void fill_header(MidiBuffer *buff, uint16_t format, uint16_t tracks, uint16_t division) {
-    midibuff_append_string(buff, "MThd");
-    midibuff_append_uint32(buff, 6);        /* num bytes following in header */
-    midibuff_append_uint16(buff, format);   /* 0=single-track; 1=multi-track; 2=multi-song */
-    midibuff_append_uint16(buff, tracks);   /* number of tracks following header */
-    midibuff_append_uint16(buff, division); /* +=ticks per beat; -=SMPTE units */
-}
-
-
 int main(void) {
     MidiBuffer *buff = midibuff_new_empty();
 
-    fill_header(buff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
+    midibuff_append_header(buff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
     MidiTrack *trackobj = track_start(buff);
     track_tempo(trackobj, 0, BPM_TO_MICROS(60));
