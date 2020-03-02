@@ -17,6 +17,12 @@ MidiBuffer *midibuff_new_empty(void) {
     return new;
 }
 
+MidiBuffer *midibuff_new(uint16_t format, uint16_t tracks, uint16_t division) {
+    MidiBuffer *new = midibuff_new_empty();
+    midibuff_append_header(new, format, tracks, division);
+    return new;
+}
+
 void midibuff_free(MidiBuffer *this) {
     free(this->bytes);
     free(this);

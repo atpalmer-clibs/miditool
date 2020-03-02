@@ -10,6 +10,7 @@ typedef struct midibuff {
 } MidiBuffer;
 
 MidiBuffer *midibuff_new_empty(void);
+MidiBuffer *midibuff_new(uint16_t format, uint16_t tracks, uint16_t division);
 void midibuff_free(MidiBuffer *this);
 void midibuff_append_raw(MidiBuffer *this, void *data, size_t count);
 void midibuff_append_string(MidiBuffer *this, char *data);

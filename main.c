@@ -8,9 +8,7 @@
 
 
 int main(void) {
-    MidiBuffer *buff = midibuff_new_empty();
-
-    midibuff_append_header(buff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
+    MidiBuffer *buff = midibuff_new(FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
     MidiTrack *trackobj = track_start(buff);
     track_tempo(trackobj, 0, BPM_TO_MICROS(60));
