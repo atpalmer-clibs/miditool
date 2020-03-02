@@ -5,11 +5,11 @@
 #include "bytebuff.h"
 
 typedef struct track {
-    struct bytebuff *buff;
+    MidiBuffer *buff;
     size_t head;
 } MidiTrack;
 
-MidiTrack *track_start(struct bytebuff *buff);
+MidiTrack *track_start(MidiBuffer *buff);
 void track_free(MidiTrack *this);
 void track_tempo(MidiTrack *this, uint32_t delta, uint32_t quarter_micros);
 void track_key(MidiTrack *this, uint32_t delta, uint16_t key);

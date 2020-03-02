@@ -8,7 +8,7 @@
 #include "bytebuff.h"
 
 
-void fill_header(struct bytebuff *buff, uint16_t format, uint16_t tracks, uint16_t division) {
+void fill_header(MidiBuffer *buff, uint16_t format, uint16_t tracks, uint16_t division) {
     bytebuff_append_string(buff, "MThd");
     bytebuff_append_uint32(buff, 6);        /* num bytes following in header */
     bytebuff_append_uint16(buff, format);   /* 0=single-track; 1=multi-track; 2=multi-song */
@@ -18,7 +18,7 @@ void fill_header(struct bytebuff *buff, uint16_t format, uint16_t tracks, uint16
 
 
 int main(void) {
-    struct bytebuff *bytebuff = bytebuff_new();
+    MidiBuffer *bytebuff = bytebuff_new();
 
     fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
