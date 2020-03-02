@@ -21,10 +21,10 @@ int main(void) {
     track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_G4, VELOCITY_MAX);
     track_note_on(trackobj, 0xFFFF, CHANNEL(1), PITCH_B4, VELOCITY_MAX);
     track_end(trackobj, 0);
+    track_free(trackobj);
 
     midibuff_save_as(buff, "out.mid");
 
-    track_free(trackobj);
     midibuff_free(buff);
     printf("Done\n");
 }
