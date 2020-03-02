@@ -9,20 +9,20 @@
 
 
 void fill_header(MidiBuffer *buff, uint16_t format, uint16_t tracks, uint16_t division) {
-    bytebuff_append_string(buff, "MThd");
-    bytebuff_append_uint32(buff, 6);        /* num bytes following in header */
-    bytebuff_append_uint16(buff, format);   /* 0=single-track; 1=multi-track; 2=multi-song */
-    bytebuff_append_uint16(buff, tracks);   /* number of tracks following header */
-    bytebuff_append_uint16(buff, division); /* +=ticks per beat; -=SMPTE units */
+    midibuff_append_string(buff, "MThd");
+    midibuff_append_uint32(buff, 6);        /* num bytes following in header */
+    midibuff_append_uint16(buff, format);   /* 0=single-track; 1=multi-track; 2=multi-song */
+    midibuff_append_uint16(buff, tracks);   /* number of tracks following header */
+    midibuff_append_uint16(buff, division); /* +=ticks per beat; -=SMPTE units */
 }
 
 
 int main(void) {
-    MidiBuffer *bytebuff = bytebuff_new();
+    MidiBuffer *buff = midibuff_new();
 
-    fill_header(bytebuff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
+    fill_header(buff, FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
 
-    MidiTrack *trackobj = track_start(bytebuff);
+    MidiTrack *trackobj = track_start(buff);
     track_tempo(trackobj, 0, BPM_TO_MICROS(60));
     track_key(trackobj, 0, KEY_C_MAJOR);
     track_time_signature(trackobj, 0, 2, TIMESIG_DENOM_4);
@@ -35,10 +35,10 @@ int main(void) {
     track_end(trackobj, 0);
 
     FILE *f = fopen("out.mid", "wb");
-    fwrite(bytebuff->bytes, bytebuff->used, 1, f);
+    fwrite(buff->bytes, buff->used, 1, f);
     fclose(f);
 
     track_free(trackobj);
-    bytebuff_free(bytebuff);
+    midibuff_free(buff);
     printf("Done\n");
 }

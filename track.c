@@ -36,7 +36,7 @@ static void add_uint32_value_at_raw(void *raw, uint32_t value) {
 
 
 static void track_append_bytes(MidiTrack *this, void *bytes, uint32_t num_bytes) {
-    bytebuff_append_raw(this->buff, bytes, num_bytes);
+    midibuff_append_raw(this->buff, bytes, num_bytes);
     add_uint32_value_at_raw(TRACK_SIZE_RAW(this), num_bytes);
 }
 
@@ -69,8 +69,8 @@ MidiTrack *track_start(MidiBuffer *buff) {
     MidiTrack *new = malloc(sizeof *new);
     new->buff = buff;
     new->head = buff->used;
-    bytebuff_append_string(buff, "MTrk");
-    bytebuff_append_uint32(buff, 0);
+    midibuff_append_string(buff, "MTrk");
+    midibuff_append_uint32(buff, 0);
     return new;
 }
 
