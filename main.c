@@ -4,7 +4,6 @@
 #include <string.h>
 #include "constants.h"
 #include "track.h"
-#include "typehelp.h"
 #include "midibuff.h"
 
 
