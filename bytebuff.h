@@ -5,8 +5,8 @@
 
 struct bytebuff {
     uint8_t *bytes;
-    uint8_t *p;
-    int cap;
+    size_t used;
+    size_t cap;
 };
 
 struct bytebuff *bytebuff_new(void);

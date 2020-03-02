@@ -35,7 +35,7 @@ int main(void) {
     track_end(trackobj, 0);
 
     FILE *f = fopen("out.mid", "wb");
-    fwrite(bytebuff->bytes, bytebuff->p - bytebuff->bytes, 1, f);
+    fwrite(bytebuff->bytes, bytebuff->used, 1, f);
     fclose(f);
 
     track_free(trackobj);

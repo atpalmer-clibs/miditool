@@ -4,12 +4,14 @@
 #include "bytebuff.h"
 #include "typehelp.h"
 
+#define NEXT_BYTE(this) ((this)->bytes[(this)->used])
+
 const int INITIAL_CAP = 1024;
 
 struct bytebuff *bytebuff_new(void) {
     struct bytebuff *new = malloc(sizeof *new);
     new->bytes = malloc(INITIAL_CAP);
-    new->p = new->bytes;
+    new->used = 0;
     new->cap = INITIAL_CAP;
     memset(new->bytes, 0, INITIAL_CAP);
     return new;
@@ -21,9 +23,9 @@ void bytebuff_free(struct bytebuff *this) {
 }
 
 void bytebuff_append_raw(struct bytebuff *this, void *data, size_t count) {
-    assert(this->p - this->bytes < this->cap);
-    memcpy(this->p, data, count);
-    this->p += count;
+    assert(this->used < this->cap);
+    memcpy(&NEXT_BYTE(this), data, count);
+    this->used += count;
 }
 
 void bytebuff_append_string(struct bytebuff *this, char *data) {
