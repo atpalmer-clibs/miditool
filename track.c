@@ -43,12 +43,11 @@ static void track_append_bytes(MidiTrack *this, void *bytes, uint32_t num_bytes)
 }
 
 
-static uint8_t *add_delta(uint8_t *p, uint32_t delta) {
-    /* MIDI delta-time uses variable-width format.
-     * Top bit of each byte indicates more bytes.
-     * Never more than four bytes.
+static size_t append_as_varwidth(uint8_t *dest, uint32_t val) {
+    /* Top bit of each byte indicates more bytes.
      */
-    uint8_t *bytes = flip4(delta).bytes;
+    uint8_t *p = dest;
+    uint8_t *bytes = flip4(val).bytes;
 
     bytes[0] = 0x7F & ((bytes[0] << 3) | (bytes[1] >> 5));
     bytes[1] = 0x7F & ((bytes[1] << 2) | (bytes[2] >> 6));
@@ -63,18 +62,15 @@ static uint8_t *add_delta(uint8_t *p, uint32_t delta) {
         *p++ = 0x80 | bytes[2];
     *p++ = 0x7F & bytes[3];
 
-    return p;
+    return p - dest;
 }
 
 
 static void track_append_chunk(MidiTrack *this, uint32_t delta, void *chunk, size_t chunk_size) {
     uint8_t new_bytes[4 + chunk_size];
-    uint8_t *p = add_delta(new_bytes, delta);
-    size_t total_size = (p - new_bytes) + chunk_size;
-
-    memcpy(&new_bytes[p - new_bytes], chunk, chunk_size);
-
-    track_append_bytes(this, new_bytes, total_size);
+    size_t dt_width = append_as_varwidth(new_bytes, delta);
+    memcpy(&new_bytes[dt_width], chunk, chunk_size);
+    track_append_bytes(this, new_bytes, dt_width + chunk_size);
 }
 
 
