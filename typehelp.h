@@ -3,6 +3,11 @@
 
 #include <stdint.h>
 
+uint8_t *typehelp_net_order_uint32(uint32_t val, uint8_t *result);
+
+
+/* TODO: Deprecate... */
+
 typedef struct twobytes {
     uint8_t bytes[2];
     uint16_t value;
