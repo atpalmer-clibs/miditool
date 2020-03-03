@@ -5,6 +5,8 @@
 #include "typehelp.h"
 #include "midibuff.h"
 
+#define ARRSIZE(arr) (sizeof(arr)/sizeof(*arr))
+
 enum status {
     /* MIDI events: or-ed with channel */
     STATUS_PROGRAM_NO = 0xC0,
@@ -65,6 +67,17 @@ static uint8_t *add_delta(uint8_t *p, uint32_t delta) {
 }
 
 
+static void track_append_chunk(MidiTrack *this, uint32_t delta, void *chunk, size_t chunk_size) {
+    uint8_t new_bytes[4 + chunk_size];
+    uint8_t *p = add_delta(new_bytes, delta);
+    size_t total_size = (p - new_bytes) + chunk_size;
+
+    memcpy(&new_bytes[p - new_bytes], chunk, chunk_size);
+
+    track_append_bytes(this, new_bytes, total_size);
+}
+
+
 MidiTrack *track_start(MidiBuffer *buff) {
     MidiTrack *new = malloc(sizeof *new);
     new->buff = buff;
@@ -81,78 +94,88 @@ void track_free(MidiTrack *this) {
 
 
 void track_tempo(MidiTrack *this, uint32_t delta, uint32_t quart_micros) {
-    uint8_t bytes[10];
-    uint8_t *p = add_delta(bytes, delta);
-    *p++ = STATUS_META_CHUNK;
-    *p++ = META_TEMPO;
-    *p++ = 3; /* bytes following... */
-    *(threebytes *)p = flip3lower(quart_micros);
-    p += 3;
-    track_append_bytes(this, bytes, p - bytes);
+    uint8_t *quart_micros_as_raw = flip3lower(quart_micros).bytes;
+
+    uint8_t chunk[] = {
+        STATUS_META_CHUNK,
+        META_TEMPO,
+        3, /* bytes following... */
+        quart_micros_as_raw[0],
+        quart_micros_as_raw[1],
+        quart_micros_as_raw[2],
+    };
+
+    track_append_chunk(this, delta, chunk, ARRSIZE(chunk));
 }
 
 
 void track_key(MidiTrack *this, uint32_t delta, uint16_t key) {
-    uint8_t bytes[9];
-    uint8_t *p = add_delta(bytes, delta);
-    *p++ = STATUS_META_CHUNK;
-    *p++ = META_KEY_SIGNATURE;
-    *p++ = 2; /* bytes following... */
-    *(uint16_t *)p = key;
-    p += 2;
-    track_append_bytes(this, bytes, p - bytes);
+    uint8_t chunk[] = {
+        STATUS_META_CHUNK,
+        META_KEY_SIGNATURE,
+        2, /* bytes following... */
+        (&key)[0],
+        (&key)[1],
+    };
+
+    track_append_chunk(this, delta, chunk, ARRSIZE(chunk));
 }
 
 
 void track_time_signature(MidiTrack *this, uint32_t delta, uint8_t num, uint8_t denomexp) {
-    uint8_t bytes[11];
-    uint8_t *p = add_delta(bytes, delta);
-    *p++ = STATUS_META_CHUNK;
-    *p++ = META_TIME_SIGNATURE;
-    *p++ = 4; /* bytes following... */
-    *p++ = num;
-    *p++ = denomexp;
-    *p++ = 24;
-    *p++ = 8;
-    track_append_bytes(this, bytes, p - bytes);
+    uint8_t chunk[] = {
+        STATUS_META_CHUNK,
+        META_TIME_SIGNATURE,
+        4, /* bytes following... */
+        num,
+        denomexp,
+        24,
+        8,
+    };
+
+    track_append_chunk(this, delta, chunk, ARRSIZE(chunk));
 }
 
 
 void track_program_no(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t program_no) {
-    uint8_t new_bytes[6];
-    uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
-    *p++ = STATUS_PROGRAM_NO | channel;
-    *p++ = program_no;
-    track_append_bytes(this, new_bytes, p - new_bytes);
+    uint8_t chunk[] = {
+        STATUS_PROGRAM_NO | channel,
+        program_no,
+    };
+
+    track_append_chunk(this, delta, chunk, ARRSIZE(chunk));
 }
 
 
 void track_note_on(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t pitch, uint8_t velocity) {
-    uint8_t new_bytes[7];
-    uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
-    *p++ = STATUS_NOTE_ON | channel;
-    *p++ = pitch;
-    *p++ = velocity;
-    track_append_bytes(this, new_bytes, p - new_bytes);
+    uint8_t chunk[] = {
+        STATUS_NOTE_ON | channel,
+        pitch,
+        velocity,
+    };
+
+    track_append_chunk(this, delta, chunk, ARRSIZE(chunk));
 }
 
 
 void track_note_off(MidiTrack *this, uint32_t delta, uint8_t channel, uint8_t pitch, uint8_t velocity) {
-    uint8_t new_bytes[7];
-    uint8_t *p = add_delta(new_bytes, delta); /* at most 4 bytes */
-    *p++ = STATUS_NOTE_OFF | channel;
-    *p++ = pitch;
-    *p++ = velocity;
-    track_append_bytes(this, new_bytes, p - new_bytes);
+    uint8_t chunk[] = {
+        STATUS_NOTE_OFF | channel,
+        pitch,
+        velocity,
+    };
+
+    track_append_chunk(this, delta, chunk, ARRSIZE(chunk));
 }
 
 
 void track_end(MidiTrack *this, uint32_t delta) {
-    uint8_t bytes[7];
-    uint8_t *p = add_delta(bytes, delta); /* at most 4 bytes */
-    *p++ = STATUS_META_CHUNK;
-    *p++ = META_TRACK_END;
-    *p++ = 0; /* no more bytes */
-    track_append_bytes(this, bytes, p - bytes);
+    uint8_t chunk[] = {
+        STATUS_META_CHUNK,
+        META_TRACK_END,
+        0, /* no more bytes */
+    };
+
+    track_append_chunk(this, delta, chunk, ARRSIZE(chunk));
 }
 
