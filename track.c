@@ -32,8 +32,7 @@ static void add_uint32_value_at_raw(void *raw, uint32_t value) {
     /* add little-endian value to big-endian "raw" pointer */
 
     uint32_t current = flip4(*(uint32_t *)raw).value;
-    uint32_t new = current + value;
-    memcpy(raw, flip4(new).bytes, 4);
+    typehelp_net_order_uint32(current + value, raw);
 }
 
 
