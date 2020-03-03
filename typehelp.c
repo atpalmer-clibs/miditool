@@ -20,6 +20,18 @@ uint8_t *typehelp_net_order_uint32(uint32_t val, uint8_t *result) {
     return result;
 }
 
+uint8_t *typehelp_net_order_uint16(uint16_t val, uint8_t *result) {
+    if(!IS_LITTLE_ENDIAN) {
+        *(uint32_t *)result = val;
+        return result;
+    }
+
+    uint8_t *bytes = (uint8_t *)&val;
+    result[0] = bytes[1];
+    result[1] = bytes[0];
+    return result;
+}
+
 
 /* TODO: Deprecate... */
 

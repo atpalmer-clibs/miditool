@@ -47,7 +47,8 @@ void midibuff_append_uint32(MidiBuffer *this, uint32_t value) {
 }
 
 void midibuff_append_uint16(MidiBuffer *this, uint16_t value) {
-    uint8_t *data = flip2(value).bytes;
+    uint8_t data[2];
+    typehelp_net_order_uint16(value, data);
     midibuff_append_raw(this, data, 2);
 }
 

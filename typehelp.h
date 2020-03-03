@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 uint8_t *typehelp_net_order_uint32(uint32_t val, uint8_t *result);
+uint8_t *typehelp_net_order_uint16(uint16_t val, uint8_t *result);
 
 
 /* TODO: Deprecate... */
