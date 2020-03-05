@@ -89,7 +89,8 @@ void track_free(MidiTrack *this) {
 
 
 void track_tempo(MidiTrack *this, uint32_t delta, uint32_t quart_micros) {
-    uint8_t *quart_micros_as_raw = flip3lower(quart_micros).bytes;
+    uint8_t quart_micros_as_raw[3];
+    typehelp_net_order_uint24(quart_micros, quart_micros_as_raw);
 
     uint8_t chunk[] = {
         STATUS_META_CHUNK,
