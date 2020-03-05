@@ -28,17 +28,15 @@ enum meta_event {
 #define TRACK_SIZE_RAW(this)  (&(&(this)->buff->bytes[(this)->head])[4])
 
 
-static void add_uint32_value_at_raw(void *raw, uint32_t value) {
-    /* add little-endian value to big-endian "raw" pointer */
-
-    uint32_t current = flip4(*(uint32_t *)raw).value;
+static void add_platform_uint32_to_net(void *raw, uint32_t value) {
+    uint32_t current = typehelp_platform_order_uint32(raw);
     typehelp_net_order_uint32(current + value, raw);
 }
 
 
 static void track_append_bytes(MidiTrack *this, void *bytes, uint32_t num_bytes) {
     midibuff_append_raw(this->buff, bytes, num_bytes);
-    add_uint32_value_at_raw(TRACK_SIZE_RAW(this), num_bytes);
+    add_platform_uint32_to_net(TRACK_SIZE_RAW(this), num_bytes);
 }
 
 
