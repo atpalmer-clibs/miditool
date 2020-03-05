@@ -35,14 +35,6 @@ uint8_t *typehelp_net_order_uint16(uint16_t val, uint8_t *result) {
 
 /* TODO: Deprecate... */
 
-twobytes flip2(uint16_t in) {
-    uint8_t *bytes = (uint8_t *)&in;
-    twobytes result;
-    result.bytes[0] = bytes[1];
-    result.bytes[1] = bytes[0];
-    return result;
-}
-
 
 fourbytes flip4(uint32_t in) {
     uint8_t *bytes = (uint8_t *)&in;
