@@ -16,6 +16,6 @@ play:
 
 .PHONY: clean
 clean:
-	rm $(OBJECTS) $(P)
+	rm $(OBJECTS) $(P) || :
 
 all: clean $(P) run play
