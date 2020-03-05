@@ -59,12 +59,3 @@ fourbytes flip4(uint32_t in) {
     return result;
 }
 
-
-threebytes flip3lower(uint32_t in) {
-    uint8_t *bytes = (uint8_t *)&in;
-    threebytes result;
-    result.bytes[0] = bytes[3];
-    result.bytes[1] = bytes[2];
-    result.bytes[2] = bytes[1];
-    return result;
-}

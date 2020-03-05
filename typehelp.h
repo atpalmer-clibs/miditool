@@ -12,16 +12,11 @@ uint8_t *typehelp_net_order_uint24(uint32_t val, uint8_t *result);
 
 /* TODO: Deprecate... */
 
-typedef struct threebytes {
-    uint8_t bytes[3];
-} threebytes;
-
 typedef union fourbytes {
     uint8_t bytes[4];
     uint32_t value;
 } fourbytes;
 
-threebytes flip3lower(uint32_t in);
 fourbytes flip4(uint32_t in);
 
 #endif
