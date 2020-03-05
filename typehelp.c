@@ -58,18 +58,3 @@ uint8_t *typehelp_net_order_uint24(uint32_t val, uint8_t *result) {
     result[2] = bytes[1];
     return result;
 }
-
-
-/* TODO: Deprecate... */
-
-
-fourbytes flip4(uint32_t in) {
-    uint8_t *bytes = (uint8_t *)&in;
-    fourbytes result;
-    result.bytes[0] = bytes[3];
-    result.bytes[1] = bytes[2];
-    result.bytes[2] = bytes[1];
-    result.bytes[3] = bytes[0];
-    return result;
-}
-
