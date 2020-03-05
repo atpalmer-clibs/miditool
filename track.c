@@ -44,7 +44,8 @@ static size_t append_as_varwidth(uint8_t *dest, uint32_t val) {
     /* Top bit of each byte indicates more bytes.
      */
     uint8_t *p = dest;
-    uint8_t *bytes = flip4(val).bytes;
+    uint8_t bytes[4];
+    typehelp_net_order_uint32(val, bytes);
 
     bytes[0] = 0x7F & ((bytes[0] << 3) | (bytes[1] >> 5));
     bytes[1] = 0x7F & ((bytes[1] << 2) | (bytes[2] >> 6));
