@@ -74,6 +74,8 @@ static void track_append_chunk(MidiTrack *this, uint32_t delta, void *chunk, siz
 
 MidiTrack *track_start(MidiBuffer *buff) {
     MidiTrack *new = malloc(sizeof *new);
+    if(!new)
+        return NULL;
     new->buff = buff;
     new->head = buff->used;
     midibuff_append_string(buff, "MTrk");
