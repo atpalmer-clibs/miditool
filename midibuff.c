@@ -7,6 +7,7 @@
 
 #define NEXT_BYTE(this) ((this)->bytes[(this)->used])
 
+/* TODO: resize! */
 const int INITIAL_CAP = 1024;
 
 MidiBuffer *midibuff_new_empty(void) {
