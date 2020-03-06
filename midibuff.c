@@ -12,10 +12,21 @@ const int INITIAL_CAP = 1024;
 
 MidiBuffer *midibuff_new_empty(void) {
     MidiBuffer *new = malloc(sizeof *new);
-    new->bytes = malloc(INITIAL_CAP);
+    if(!new)
+        goto out;
+    void *bytemem = malloc(INITIAL_CAP);
+    if(!bytemem)
+        goto cleanup;
+    new->bytes = bytemem;
     new->used = 0;
     new->cap = INITIAL_CAP;
     memset(new->bytes, 0, INITIAL_CAP);
+    goto out;
+
+cleanup:
+    free(new);
+    new = NULL;
+out:
     return new;
 }
 
