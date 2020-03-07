@@ -77,8 +77,11 @@ void midibuff_append_header(MidiBuffer *this, uint16_t format, uint16_t tracks, 
     midibuff_append_uint16(this, division); /* +=ticks per beat; -=SMPTE units */
 }
 
-void midibuff_save_as(MidiBuffer *this, const char *filename) {
+size_t midibuff_save_as(MidiBuffer *this, const char *filename) {
     FILE *f = fopen(filename, "wb");
-    fwrite(this->bytes, this->used, 1, f);
+    if(!f)
+        return 0;
+    size_t result = fwrite(this->bytes, this->used, 1, f);
     fclose(f);
+    return result;
 }

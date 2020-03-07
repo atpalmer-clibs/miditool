@@ -18,6 +18,6 @@ void midibuff_append_uint32(MidiBuffer *this, uint32_t data);
 void midibuff_append_uint16(MidiBuffer *this, uint16_t data);
 void midibuff_append_uint8(MidiBuffer *this, uint8_t data);
 void midibuff_append_header(MidiBuffer *this, uint16_t format, uint16_t tracks, uint16_t division);
-void midibuff_save_as(MidiBuffer *this, const char *filename);
+size_t midibuff_save_as(MidiBuffer *this, const char *filename);
 
 #endif
