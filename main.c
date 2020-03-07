@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "constants.h"
 #include "track.h"
@@ -9,8 +10,13 @@
 
 int main(void) {
     MidiBuffer *buff = midibuff_new(FORMAT_SINGLE_TRACK, 1, DIVISION_TICKS_PER_BEAT(10000));
+    if(!buff)
+        exit(EXIT_FAILURE);
 
     MidiTrack *trackobj = track_start(buff);
+    if(!trackobj)
+        exit(EXIT_FAILURE);
+
     track_tempo(trackobj, 0, BPM_TO_MICROS(60));
     track_key(trackobj, 0, KEY_C_MAJOR);
     track_time_signature(trackobj, 0, 2, TIMESIG_DENOM_4);
@@ -23,7 +29,8 @@ int main(void) {
     track_end(trackobj, 0);
     track_free(trackobj);
 
-    midibuff_save_as(buff, "out.mid");
+    if(!midibuff_save_as(buff, "out.mid"))
+        exit(EXIT_FAILURE);
 
     midibuff_free(buff);
     printf("Done\n");
