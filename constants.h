@@ -22,10 +22,13 @@ enum pitch {
     PITCH_C5 = 0x48,
 };
 
+enum key_tonality {
+    KEY_TONALITY_MAJOR = 0,
+    KEY_TONALITY_MINOR = 1,
+};
 
-const uint16_t KEY_G_MAJOR = 0x0100;
-const uint16_t KEY_C_MAJOR = 0x0000;
-const uint16_t KEY_F_MAJOR = 0x8100;
+#define KEY_SHARPS(count) ((uint8_t)count)
+#define KEY_FLATS(count) ((uint8_t)(-1 * (count)))
 
 enum timesig_denom {
     TIMESIG_DENOM_1 = 0,

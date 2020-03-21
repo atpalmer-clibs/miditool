@@ -18,7 +18,7 @@ int main(void) {
         exit(EXIT_FAILURE);
 
     track_tempo(trackobj, 0, BPM_TO_MICROS(60));
-    track_key(trackobj, 0, KEY_C_MAJOR);
+    track_key(trackobj, 0, KEY_SHARPS(0), KEY_TONALITY_MAJOR);
     track_time_signature(trackobj, 0, 2, TIMESIG_DENOM_4);
     track_program_no(trackobj, 0, CHANNEL(1), 46);
     track_note_on(trackobj, 0, CHANNEL(1), PITCH_G3, VELOCITY_MAX);

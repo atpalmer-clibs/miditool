@@ -106,13 +106,13 @@ void track_tempo(MidiTrack *this, uint32_t delta, uint32_t quart_micros) {
 }
 
 
-void track_key(MidiTrack *this, uint32_t delta, uint16_t key) {
+void track_key(MidiTrack *this, uint32_t delta, uint8_t sharps, uint8_t tonality) {
     uint8_t chunk[] = {
         STATUS_META_CHUNK,
         META_KEY_SIGNATURE,
         2, /* bytes following... */
-        (&key)[0],
-        (&key)[1],
+        sharps,
+        tonality,
     };
 
     track_append_chunk(this, delta, chunk, ARRSIZE(chunk));
