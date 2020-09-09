@@ -1,8 +1,8 @@
+#include <arpa/inet.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "track.h"
-#include "typehelp.h"
 #include "midibuff.h"
 
 #define ARRSIZE(arr) (sizeof(arr)/sizeof(*arr))
@@ -25,18 +25,13 @@ enum meta_event {
 };
 
 
-#define TRACK_SIZE_RAW(this)  (&(&(this)->buff->bytes[(this)->head])[4])
-
-
-static void add_platform_uint32_to_net(void *raw, uint32_t value) {
-    uint32_t current = typehelp_platform_order_uint32(raw);
-    typehelp_net_order_uint32(current + value, raw);
-}
+#define TRACK_SIZE_RAW(this)  ((uint32_t *)(&(&(this)->buff->bytes[(this)->head])[4]))
 
 
 static void track_append_bytes(MidiTrack *this, void *bytes, uint32_t num_bytes) {
     midibuff_append_raw(this->buff, bytes, num_bytes);
-    add_platform_uint32_to_net(TRACK_SIZE_RAW(this), num_bytes);
+    uint32_t *track_sz = TRACK_SIZE_RAW(this);
+    *track_sz = htonl(ntohl(*track_sz) + num_bytes);
 }
 
 
@@ -44,8 +39,8 @@ static size_t append_as_varwidth(uint8_t *dest, uint32_t val) {
     /* Top bit of each byte indicates more bytes.
      */
     uint8_t *p = dest;
-    uint8_t bytes[4];
-    typehelp_net_order_uint32(val, bytes);
+    uint32_t nval = htonl(val);
+    uint8_t *bytes = (uint8_t *)&nval;
 
     bytes[0] = 0x7F & ((bytes[0] << 3) | (bytes[1] >> 5));
     bytes[1] = 0x7F & ((bytes[1] << 2) | (bytes[2] >> 6));
@@ -90,8 +85,8 @@ void track_free(MidiTrack *this) {
 
 
 void track_tempo(MidiTrack *this, uint32_t delta, uint32_t quart_micros) {
-    uint8_t quart_micros_as_raw[3];
-    typehelp_net_order_uint24(quart_micros, quart_micros_as_raw);
+    uint32_t nmicros = htonl(quart_micros);
+    uint8_t *quart_micros_as_raw = (uint8_t *)&nmicros;
 
     uint8_t chunk[] = {
         STATUS_META_CHUNK,
