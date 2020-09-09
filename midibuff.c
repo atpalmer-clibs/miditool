@@ -1,9 +1,9 @@
+#include <arpa/inet.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "midibuff.h"
-#include "typehelp.h"
 
 #define NEXT_BYTE(this) ((this)->bytes[(this)->used])
 
@@ -53,20 +53,17 @@ void midibuff_append_string(MidiBuffer *this, char *data) {
 }
 
 void midibuff_append_uint32(MidiBuffer *this, uint32_t value) {
-    uint8_t data[4];
-    typehelp_net_order_uint32(value, data);
-    midibuff_append_raw(this, data, 4);
+    uint32_t data = htonl(value);
+    midibuff_append_raw(this, &data, 4);
 }
 
 void midibuff_append_uint16(MidiBuffer *this, uint16_t value) {
-    uint8_t data[2];
-    typehelp_net_order_uint16(value, data);
-    midibuff_append_raw(this, data, 2);
+    uint16_t data = htons(value);
+    midibuff_append_raw(this, &data, 2);
 }
 
 void midibuff_append_uint8(MidiBuffer *this, uint8_t value) {
-    uint8_t *data = &value;
-    midibuff_append_raw(this, data, 1);
+    midibuff_append_raw(this, &value, 1);
 }
 
 void midibuff_append_header(MidiBuffer *this, uint16_t format, uint16_t tracks, uint16_t division) {
