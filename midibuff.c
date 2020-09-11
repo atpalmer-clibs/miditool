@@ -13,21 +13,19 @@ const int INITIAL_CAP = 1024;
 MidiBuffer *midibuff_new_empty(void) {
     MidiBuffer *new = malloc(sizeof *new);
     if(!new)
-        goto out;
+        return NULL;
     void *bytemem = malloc(INITIAL_CAP);
     if(!bytemem)
-        goto cleanup;
+        goto fail;
     new->bytes = bytemem;
     new->used = 0;
     new->cap = INITIAL_CAP;
     memset(new->bytes, 0, INITIAL_CAP);
-    goto out;
-
-cleanup:
-    free(new);
-    new = NULL;
-out:
     return new;
+
+fail:
+    free(new);
+    return NULL;
 }
 
 MidiBuffer *midibuff_new(uint16_t format, uint16_t tracks, uint16_t division) {
