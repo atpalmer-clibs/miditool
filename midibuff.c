@@ -5,7 +5,7 @@
 #include <string.h>
 #include "midibuff.h"
 
-#define NEXT_BYTE(this) ((this)->bytes[(this)->used])
+#define NEXT_AVAIL_BYTE(this) (&(this)->bytes[(this)->used])
 
 /* TODO: resize! */
 const int INITIAL_CAP = 1024;
@@ -41,7 +41,7 @@ void midibuff_free(MidiBuffer *this) {
 
 void midibuff_append_raw(MidiBuffer *this, void *data, size_t count) {
     assert(this->used < this->cap);
-    memcpy(&NEXT_BYTE(this), data, count);
+    memcpy(NEXT_AVAIL_BYTE(this), data, count);
     this->used += count;
 }
 
